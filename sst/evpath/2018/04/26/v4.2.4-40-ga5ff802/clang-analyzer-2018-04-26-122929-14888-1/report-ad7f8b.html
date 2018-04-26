@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>
+<title>/home/chuck/Code/sst/EVPath/source/dlloader.c</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000;   border-radius:5px;  box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .msgNote { background-color:#ddeeff; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndex { border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align: right;
+   vertical-align: top;
+   font-weight: bold;
+   color:#444444;
+   padding-right:2ex;
+ }
+</style>
+</head>
+<body>
+<!-- BUGDESC Potential leak of memory pointed to by 'tmp' -->
+
+<!-- BUGTYPE Memory leak -->
+
+<!-- BUGCATEGORY Memory error -->
+
+<!-- BUGFILE /home/chuck/Code/sst/EVPath/source/dlloader.c -->
+
+<!-- FILENAME dlloader.c -->
+
+<!-- FUNCTIONNAME CMdlopen -->
+
+<!-- ISSUEHASHCONTENTOFLINEINCONTEXT 657a1dbbf74a213dd5a827a4d38ac17e -->
+
+<!-- BUGLINE 75 -->
+
+<!-- BUGCOLUMN 3 -->
+
+<!-- BUGPATHLENGTH 11 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>dlloader.c</td></tr>
+<tr><td class="rowname">Warning:</td><td><a href="#EndPath">line 75, column 3</a><br />Potential leak of memory pointed to by 'tmp'</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='directive'>#include "config.h"</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='directive'>#include &lt;dlfcn.h&gt;</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='directive'>#include &lt;stdio.h&gt;</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='directive'>#include &lt;string.h&gt;</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='directive'>#include &lt;stdlib.h&gt;</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='directive'>#include "dlloader.h"</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>char</span> **search_list = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line">CMdladdsearchdir(<span class='keyword'>char</span> *string)</td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line">    <span class='keyword'>int</span> count = 0;</td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line">    <span class='keyword'>if</span> (search_list == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line">	search_list = malloc(2*<span class='keyword'>sizeof</span>(<span class='keyword'>char</span>*));</td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line">	<span class='keyword'>while</span>(search_list[count] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) count++;</td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line">	search_list = realloc(search_list, (count+2)*<span class='keyword'>sizeof</span>(<span class='keyword'>char</span>*));</td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line">    search_list[count] = strdup(string);</td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line">    search_list[count+1] = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='keyword'>typedef</span> <span class='keyword'>struct</span> {</td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line">    <span class='keyword'>void</span> *dlopen_handle;</td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line">    <span class='keyword'>char</span> *lib_prefix;</td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line">} *dlhandle;</td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> dlopen_verbose = -1;</td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line">CMset_dlopen_verbose(<span class='keyword'>int</span> verbose)</td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line">    dlopen_verbose = verbose;</td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line">CMdlopen(<span class='keyword'>void</span> *CMTrace_filev, <span class='keyword'>char</span> *in_lib, <span class='keyword'>int</span> mode)</td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='directive'>#if NO_DYNAMIC_LINKING</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line">    <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line">    dlhandle dlh;</td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line">    <span class='keyword'>void</span> *handle = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line">    <span class='keyword'>char</span> *tmp;</td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line">    <span class='keyword'>char</span> *lib;</td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line">    FILE *CMTrace_file = (FILE*)CMTrace_filev;</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line">    <span class='keyword'>if</span> (<span class="mrange">dlopen_verbose == -1</span>) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path1" class="msg msgEvent" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">1</div></td><td>Assuming the condition is false</td><td><div class="PathNav"><a href="#Path2" title="Next event (2)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path2" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">2</div></td><td><div class="PathNav"><a href="#Path1" title="Previous event (1)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#Path3" title="Next event (3)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line">	dlopen_verbose = (getenv(<span class='string_literal'>"CMTransportVerbose"</span>) != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>);</td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line">    tmp = rindex(in_lib, '.');</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line">    <span class='keyword'>if</span> (<span class="mrange">dlopen_verbose</span>) fprintf(CMTrace_file, <span class='string_literal'>"Trying to dlopen %s\n"</span>, in_lib);</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path3" class="msg msgEvent" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">3</div></td><td><div class="PathNav"><a href="#Path2" title="Previous event (2)">&#x2190;</a></div></td></td><td>Assuming 'dlopen_verbose' is 0</td><td><div class="PathNav"><a href="#Path4" title="Next event (4)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path4" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">4</div></td><td><div class="PathNav"><a href="#Path3" title="Previous event (3)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#Path5" title="Next event (5)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line">    <span class='keyword'>if</span> (<span class="mrange">tmp</span> &amp;&amp; (strcmp(tmp, <span class='string_literal'>".la"</span>) == 0)) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path5" class="msg msgEvent" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">5</div></td><td><div class="PathNav"><a href="#Path4" title="Previous event (4)">&#x2190;</a></div></td></td><td>Assuming 'tmp' is null</td><td><div class="PathNav"><a href="#Path6" title="Next event (6)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line">	<span class='comment'>/* can't open .la files */</span></td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">	lib = malloc(strlen(in_lib) + strlen(<span class='macro'>MODULE_EXT<span class='expansion'>".so"</span></span>) + 8);</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">	strcpy(lib, in_lib);</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">	strcpy(rindex(lib, '.'), <span class='macro'>MODULE_EXT<span class='expansion'>".so"</span></span>);</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">	<span class='keyword'>if</span> (dlopen_verbose) fprintf(CMTrace_file, <span class='string_literal'>"Dlopen module name replaced, now %s\n"</span>, lib);</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">	lib = strdup(in_lib);</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">    <span class='keyword'>char</span> **list = search_list;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">    <span class='keyword'>while</span>(<span class="mrange">list</span> &amp;&amp; (<span class="mrange">list[0] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span></span>)) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path6" class="msg msgEvent" style="margin-left:11ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">6</div></td><td><div class="PathNav"><a href="#Path5" title="Previous event (5)">&#x2190;</a></div></td></td><td>Assuming 'list' is non-null</td><td><div class="PathNav"><a href="#Path7" title="Next event (7)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path7" class="msg msgEvent" style="margin-left:20ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">7</div></td><td><div class="PathNav"><a href="#Path6" title="Previous event (6)">&#x2190;</a></div></td></td><td>Assuming the condition is true</td><td><div class="PathNav"><a href="#Path8" title="Next event (8)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path8" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">8</div></td><td><div class="PathNav"><a href="#Path7" title="Previous event (7)">&#x2190;</a></div></td></td><td>Loop condition is true.  Entering loop body</td><td><div class="PathNav"><a href="#Path9" title="Next event (9)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">        <span class='keyword'>char</span> *tmp = <span class="mrange">malloc(strlen(list[0]) + strlen(lib) + 2)</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path9" class="msg msgEvent" style="margin-left:21ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">9</div></td><td><div class="PathNav"><a href="#Path8" title="Previous event (8)">&#x2190;</a></div></td></td><td>Memory is allocated</td><td><div class="PathNav"><a href="#Path10" title="Next event (10)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line">	sprintf(tmp, <span class='string_literal'>"%s/%s"</span>, list[0], lib);</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">	handle = dlopen(tmp, <span class='macro'>RTLD_LAZY<span class='expansion'>0x00001</span></span>);</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">	<span class='keyword'>char</span> *err = dlerror();</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line">	<span class='keyword'>if</span> (dlopen_verbose) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path10" class="msg msgControl" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">10</div></td><td><div class="PathNav"><a href="#Path9" title="Previous event (9)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#EndPath" title="Next event (11)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line">	    <span class='keyword'>if</span> (err) {</td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line">		fprintf(CMTrace_file, <span class='string_literal'>"Failed to dlopen %s, error is %s\n"</span>, tmp, err);</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">	    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line">		fprintf(CMTrace_file, <span class='string_literal'>"DLopen of %s succeeded\n"</span>, tmp);</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line"> 	list++;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:10ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">11</div></td><td><div class="PathNav"><a href="#Path10" title="Previous event (10)">&#x2190;</a></div></td></td><td>Potential leak of memory pointed to by 'tmp'</td></tr></table></div></td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">	<span class='keyword'>if</span> (handle) list = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>; <span class='comment'>// fall out</span></td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">    <span class='keyword'>if</span> (!handle) {</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">        handle = dlopen(lib, <span class='macro'>RTLD_LAZY<span class='expansion'>0x00001</span></span>);</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">	<span class='keyword'>char</span> *err = dlerror();</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">	<span class='keyword'>if</span> (dlopen_verbose) {</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">	    <span class='keyword'>if</span> (err) {</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">		fprintf(CMTrace_file, <span class='string_literal'>"Failed to dlopen %s, error is %s\n"</span>, tmp, err);</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">	    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">		fprintf(CMTrace_file, <span class='string_literal'>"DLopen of %s succeeded\n"</span>, tmp);</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">    <span class='keyword'>if</span> (!handle) <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">    dlh = malloc(<span class='keyword'>sizeof</span>(*dlh));</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">    tmp = rindex(lib, '/'); <span class='comment'>/* find name start */</span></td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">    <span class='keyword'>if</span> (!tmp) tmp = lib;</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">    <span class='keyword'>char</span> *cm_lib_prefix;</td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">    <span class='keyword'>if</span>(strlen(<span class='macro'>CM_LIBRARY_PREFIX<span class='expansion'>""</span></span>) &gt; 0 &amp;&amp;</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">      (cm_lib_prefix = strstr(tmp, <span class='macro'>CM_LIBRARY_PREFIX<span class='expansion'>""</span></span>))) {</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">      dlh-&gt;lib_prefix = malloc(strlen(tmp) - strlen(<span class='macro'>CM_LIBRARY_PREFIX<span class='expansion'>""</span></span>) + 4);</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">      strncpy(dlh-&gt;lib_prefix, tmp, cm_lib_prefix-tmp);</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">      strcpy(dlh-&gt;lib_prefix + (cm_lib_prefix - tmp),</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">          cm_lib_prefix + strlen(<span class='macro'>CM_LIBRARY_PREFIX<span class='expansion'>""</span></span>));</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">    <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">      dlh-&gt;lib_prefix = malloc(strlen(tmp) + 4);</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">      strcpy(dlh-&gt;lib_prefix, tmp);</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">    tmp = rindex(dlh-&gt;lib_prefix, '.');</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">    strcpy(tmp, <span class='string_literal'>"_LTX_"</span>);  <span class='comment'>/* kill postfix, add _LTX_ */</span></td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">    dlh-&gt;dlopen_handle = handle;</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">    free(lib);</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">    <span class='keyword'>return</span> (<span class='keyword'>void</span>*)dlh;</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line"><span class='keyword'>void</span>*</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">CMdlsym(<span class='keyword'>void</span> *vdlh, <span class='keyword'>char</span> *sym)</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line"><span class='directive'>#if NO_DYNAMIC_LINKING</span></td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">    <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">    dlhandle dlh = (dlhandle)vdlh;</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">    <span class='keyword'>char</span> *tmp = malloc(strlen(sym) + strlen(dlh-&gt;lib_prefix) + 1);</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">    <span class='keyword'>void</span> *sym_val;</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">    strcpy(tmp, dlh-&gt;lib_prefix);</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">    strcat(tmp, sym);</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">    sym_val = dlsym(dlh-&gt;dlopen_handle, tmp);</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">    free(tmp);</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">    <span class='keyword'>if</span> (!sym_val) </td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">	sym_val = dlsym(dlh-&gt;dlopen_handle, sym);</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">    <span class='keyword'>return</span> sym_val;</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line">}</td></tr>
+</table></body></html>

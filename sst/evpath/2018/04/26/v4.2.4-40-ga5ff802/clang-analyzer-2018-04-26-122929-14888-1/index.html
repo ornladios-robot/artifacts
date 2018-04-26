@@ -1,0 +1,419 @@
+<html>
+<head>
+<title>build - scan-build results</title>
+<link type="text/css" rel="stylesheet" href="scanview.css"/>
+<script src="sorttable.js"></script>
+<script language='javascript' type="text/javascript">
+function SetDisplay(RowClass, DisplayVal)
+{
+  var Rows = document.getElementsByTagName("tr");
+  for ( var i = 0 ; i < Rows.length; ++i ) {
+    if (Rows[i].className == RowClass) {
+      Rows[i].style.display = DisplayVal;
+    }
+  }
+}
+
+function CopyCheckedStateToCheckButtons(SummaryCheckButton) {
+  var Inputs = document.getElementsByTagName("input");
+  for ( var i = 0 ; i < Inputs.length; ++i ) {
+    if (Inputs[i].type == "checkbox") {
+      if(Inputs[i] != SummaryCheckButton) {
+        Inputs[i].checked = SummaryCheckButton.checked;
+        Inputs[i].onclick();
+      }
+    }
+  }
+}
+
+function returnObjById( id ) {
+    if (document.getElementById)
+        var returnVar = document.getElementById(id);
+    else if (document.all)
+        var returnVar = document.all[id];
+    else if (document.layers)
+        var returnVar = document.layers[id];
+    return returnVar;
+}
+
+var NumUnchecked = 0;
+
+function ToggleDisplay(CheckButton, ClassName) {
+  if (CheckButton.checked) {
+    SetDisplay(ClassName, "");
+    if (--NumUnchecked == 0) {
+      returnObjById("AllBugsCheck").checked = true;
+    }
+  }
+  else {
+    SetDisplay(ClassName, "none");
+    NumUnchecked++;
+    returnObjById("AllBugsCheck").checked = false;
+  }
+}
+</script>
+<!-- SUMMARYENDHEAD -->
+</head>
+<body>
+<h1>build - scan-build results</h1>
+
+<table>
+<tr><th>User:</th><td>chuck@euclid</td></tr>
+<tr><th>Working Directory:</th><td>/home/chuck/Code/sst/EVPath/build</td></tr>
+<tr><th>Command Line:</th><td>make -j8</td></tr>
+<tr><th>Clang Version:</th><td>clang version 5.0.1 (tags/RELEASE_501/final)
+</td></tr>
+<tr><th>Date:</th><td>Thu Apr 26 12:29:29 2018</td></tr>
+</table>
+<h2>Bug Summary</h2><table>
+<thead><tr><td>Bug Type</td><td>Quantity</td><td class="sorttable_nosort">Display?</td></tr></thead>
+<tr style="font-weight:bold"><td class="SUMM_DESC">All Bugs</td><td class="Q">104</td><td><center><input type="checkbox" id="AllBugsCheck" onClick="CopyCheckedStateToCheckButtons(this);" checked/></center></td></tr>
+<tr><th>API</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Argument with 'nonnull' attribute passed null</td><td class="Q">22</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_api_argument_with_nonnull_attribute_passed_null');" checked/></center></td></tr>
+<tr><th>Dead store</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Dead assignment</td><td class="Q">17</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_dead_store_dead_assignment');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Dead increment</td><td class="Q">6</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_dead_store_dead_increment');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Dead initialization</td><td class="Q">3</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_dead_store_dead_initialization');" checked/></center></td></tr>
+<tr><th>Logic error</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Assigned value is garbage or undefined</td><td class="Q">2</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_assigned_value_is_garbage_or_undefined');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Branch condition evaluates to a garbage value</td><td class="Q">1</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_branch_condition_evaluates_to_a_garbage_value');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Dereference of null pointer</td><td class="Q">6</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_dereference_of_null_pointer');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Function call with too few arguments</td><td class="Q">1</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_function_call_with_too_few_arguments');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Result of operation is garbage or undefined</td><td class="Q">2</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_result_of_operation_is_garbage_or_undefined');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Uninitialized argument value</td><td class="Q">4</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_uninitialized_argument_value');" checked/></center></td></tr>
+<tr><th>Memory error</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Memory leak</td><td class="Q">35</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_memory_error_memory_leak');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Use of zero allocated</td><td class="Q">3</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_memory_error_use_of_zero_allocated');" checked/></center></td></tr>
+<tr><th>Unix API</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Allocator sizeof operand mismatch</td><td class="Q">2</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_unix_api_allocator_sizeof_operand_mismatch');" checked/></center></td></tr>
+</table>
+<h2>Reports</h2>
+
+<table class="sortable" style="table-layout:automatic">
+<thead><tr>
+  <td>Bug Group</td>
+  <td class="sorttable_sorted">Bug Type<span id="sorttable_sortfwdind">&nbsp;&#x25BE;</span></td>
+  <td>File</td>
+  <td>Function/Method</td>
+  <td class="Q">Line</td>
+  <td class="Q">Path Length</td>
+  <td class="sorttable_nosort"></td>
+  <!-- REPORTBUGCOL -->
+</tr></thead>
+<tbody>
+<tr class="bt_unix_api_allocator_sizeof_operand_mismatch"><td class="DESC">Unix API</td><td class="DESC">Allocator sizeof operand mismatch</td><td>cmfabric.c</td><td class="DESC">libcmfabric_LTX_install_pull_schedule</td><td class="Q">2542</td><td class="Q">1</td><td><a href="report-57322b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-57322b.html" -->
+</tr>
+<tr class="bt_unix_api_allocator_sizeof_operand_mismatch"><td class="DESC">Unix API</td><td class="DESC">Allocator sizeof operand mismatch</td><td>cmfabric.c</td><td class="DESC">libcmfabric_LTX_install_pull_schedule</td><td class="Q">2541</td><td class="Q">1</td><td><a href="report-aeda23.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-aeda23.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/split_test.c</td><td class="DESC">main</td><td class="Q">238</td><td class="Q">6</td><td><a href="report-d81504.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d81504.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/multiq_test.c</td><td class="DESC">main</td><td class="Q">279</td><td class="Q">6</td><td><a href="report-3e1b8c.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3e1b8c.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>cm.c</td><td class="DESC">INT_CMget_specific_contact_list</td><td class="Q">388</td><td class="Q">13</td><td><a href="report-71718c.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-71718c.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/no_type_router_test.c</td><td class="DESC">main</td><td class="Q">266</td><td class="Q">6</td><td><a href="report-edbadc.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-edbadc.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>cm.c</td><td class="DESC">INT_CMget_specific_contact_list</td><td class="Q">420</td><td class="Q">14</td><td><a href="report-6ef868.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-6ef868.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/router_test.c</td><td class="DESC">main</td><td class="Q">285</td><td class="Q">6</td><td><a href="report-3a8856.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3a8856.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/rawtest2.c</td><td class="DESC">main</td><td class="Q">226</td><td class="Q">6</td><td><a href="report-3b1b67.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3b1b67.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/http_test.c</td><td class="DESC">main</td><td class="Q">226</td><td class="Q">6</td><td><a href="report-070a1f.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-070a1f.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/bulktest.c</td><td class="DESC">main</td><td class="Q">434</td><td class="Q">9</td><td><a href="report-a7acd3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-a7acd3.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/rawtest.c</td><td class="DESC">main</td><td class="Q">215</td><td class="Q">6</td><td><a href="report-fa1c72.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-fa1c72.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/router_test2.c</td><td class="DESC">main</td><td class="Q">276</td><td class="Q">6</td><td><a href="report-ffbe15.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ffbe15.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/extract_test.c</td><td class="DESC">main</td><td class="Q">278</td><td class="Q">6</td><td><a href="report-e6cbb1.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-e6cbb1.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/filter2_test.c</td><td class="DESC">main</td><td class="Q">385</td><td class="Q">6</td><td><a href="report-4eb3ab.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-4eb3ab.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/submit_test.c</td><td class="DESC">main</td><td class="Q">280</td><td class="Q">6</td><td><a href="report-c81ccf.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c81ccf.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/evtest.c</td><td class="DESC">main</td><td class="Q">237</td><td class="Q">6</td><td><a href="report-c509d6.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c509d6.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>cmib.c</td><td class="DESC">initiate_conn</td><td class="Q">1214</td><td class="Q">17</td><td><a href="report-91efb3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-91efb3.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/transform_test.c</td><td class="DESC">main</td><td class="Q">311</td><td class="Q">8</td><td><a href="report-80fe93.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-80fe93.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>ev_dfg.c</td><td class="DESC">max_output_for_action</td><td class="Q">1485</td><td class="Q">48</td><td><a href="report-c7df6c.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c7df6c.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/filter_test.c</td><td class="DESC">main</td><td class="Q">269</td><td class="Q">8</td><td><a href="report-97257c.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-97257c.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>tests/auto_test.c</td><td class="DESC">main</td><td class="Q">228</td><td class="Q">6</td><td><a href="report-780bd1.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-780bd1.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>cm_pbio.c</td><td class="DESC">signal_requests</td><td class="Q">216</td><td class="Q">29</td><td><a href="report-4f0a55.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-4f0a55.html" -->
+</tr>
+<tr class="bt_api_argument_with_nonnull_attribute_passed_null"><td class="DESC">API</td><td class="DESC">Argument with 'nonnull' attribute passed null</td><td>cmsockets.c</td><td class="DESC">initiate_conn</td><td class="Q">410</td><td class="Q">19</td><td><a href="report-081d64.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-081d64.html" -->
+</tr>
+<tr class="bt_logic_error_assigned_value_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Assigned value is garbage or undefined</td><td>cm.c</td><td class="DESC">INT_CMwrite_raw_notify</td><td class="Q">2984</td><td class="Q">15</td><td><a href="report-c08f8a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c08f8a.html" -->
+</tr>
+<tr class="bt_logic_error_assigned_value_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Assigned value is garbage or undefined</td><td>response.c</td><td class="DESC">install_response_handler</td><td class="Q">381</td><td class="Q">24</td><td><a href="report-581b03.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-581b03.html" -->
+</tr>
+<tr class="bt_logic_error_branch_condition_evaluates_to_a_garbage_value"><td class="DESC">Logic error</td><td class="DESC">Branch condition evaluates to a garbage value</td><td>cmselect.c</td><td class="DESC">setup_wake_mechanism</td><td class="Q">993</td><td class="Q">7</td><td><a href="report-935411.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-935411.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>mtests/bulktest.c</td><td class="DESC">main</td><td class="Q">316</td><td class="Q">1</td><td><a href="report-3c232a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3c232a.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm.c</td><td class="DESC">queue_remaining_write</td><td class="Q">2864</td><td class="Q">1</td><td><a href="report-cd86e2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-cd86e2.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm_formats.c</td><td class="DESC">add_format_to_cm</td><td class="Q">141</td><td class="Q">1</td><td><a href="report-3f6d34.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3f6d34.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm.c</td><td class="DESC">CMact_on_data</td><td class="Q">2519</td><td class="Q">1</td><td><a href="report-48940f.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-48940f.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cmfabric.c</td><td class="DESC">fabric_service_incoming</td><td class="Q">1364</td><td class="Q">1</td><td><a href="report-95f7f2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-95f7f2.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>dfg_tests/auto_tree_test.c</td><td class="DESC">be_test_master</td><td class="Q">66</td><td class="Q">1</td><td><a href="report-46ca73.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-46ca73.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>response.c</td><td class="DESC">response_determination</td><td class="Q">1322</td><td class="Q">1</td><td><a href="report-9dd6cf.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-9dd6cf.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm.c</td><td class="DESC">cm_return_data_buf</td><td class="Q">1787</td><td class="Q">1</td><td><a href="report-a0e9a1.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-a0e9a1.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>mtests/cmping.c</td><td class="DESC">main</td><td class="Q">217</td><td class="Q">1</td><td><a href="report-456e79.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-456e79.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>response.c</td><td class="DESC">extract_symbol_name</td><td class="Q">2049</td><td class="Q">1</td><td><a href="report-f00a7a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f00a7a.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm.c</td><td class="DESC">CMact_on_data</td><td class="Q">2398</td><td class="Q">1</td><td><a href="report-01382b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-01382b.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>mtests/trans_test.c</td><td class="DESC">main</td><td class="Q">398</td><td class="Q">1</td><td><a href="report-ef7613.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ef7613.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>response.c</td><td class="DESC">response_determination</td><td class="Q">1348</td><td class="Q">1</td><td><a href="report-f44d62.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f44d62.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>mtests/take_test.c</td><td class="DESC">main</td><td class="Q">312</td><td class="Q">1</td><td><a href="report-f7d225.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f7d225.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cmfabric.c</td><td class="DESC">fabric_accept_conn</td><td class="Q">1287</td><td class="Q">1</td><td><a href="report-85d119.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-85d119.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>cm.c</td><td class="DESC">queue_remaining_write</td><td class="Q">2865</td><td class="Q">1</td><td><a href="report-ff47cc.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ff47cc.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>dfg_tests/auto_tree_test.c</td><td class="DESC">be_test_master</td><td class="Q">82</td><td class="Q">1</td><td><a href="report-b65134.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b65134.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">726</td><td class="Q">1</td><td><a href="report-f52d61.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f52d61.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">655</td><td class="Q">1</td><td><a href="report-039cff.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-039cff.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">652</td><td class="Q">1</td><td><a href="report-ec025c.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ec025c.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">690</td><td class="Q">1</td><td><a href="report-96da02.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-96da02.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">729</td><td class="Q">1</td><td><a href="report-d4dd62.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d4dd62.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">687</td><td class="Q">1</td><td><a href="report-db492d.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-db492d.html" -->
+</tr>
+<tr class="bt_dead_store_dead_initialization"><td class="DESC">Dead store</td><td class="DESC">Dead initialization</td><td>cmudp.c</td><td class="DESC">libcmudp_LTX_writev_func</td><td class="Q">652</td><td class="Q">1</td><td><a href="report-a566a7.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-a566a7.html" -->
+</tr>
+<tr class="bt_dead_store_dead_initialization"><td class="DESC">Dead store</td><td class="DESC">Dead initialization</td><td>cmfabric.c</td><td class="DESC">perform_pull</td><td class="Q">695</td><td class="Q">1</td><td><a href="report-554499.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-554499.html" -->
+</tr>
+<tr class="bt_dead_store_dead_initialization"><td class="DESC">Dead store</td><td class="DESC">Dead initialization</td><td>cmenet.c</td><td class="DESC">enet_service_network</td><td class="Q">198</td><td class="Q">1</td><td><a href="report-1c55c8.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-1c55c8.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>evp.c</td><td class="DESC">do_bridge_action</td><td class="Q">2105</td><td class="Q">6</td><td><a href="report-0b2cc6.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-0b2cc6.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>cm.c</td><td class="DESC">add_pending_write_callback</td><td class="Q">2902</td><td class="Q">9</td><td><a href="report-c6daf7.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c6daf7.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>cmib.c</td><td class="DESC">handle_request</td><td class="Q">849</td><td class="Q">12</td><td><a href="report-87f841.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-87f841.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>evp.c</td><td class="DESC">dequeue_item</td><td class="Q">891</td><td class="Q">21</td><td><a href="report-4f5ae9.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-4f5ae9.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>dfg_tests/fail_chain_test.c</td><td class="DESC">fail_handler</td><td class="Q">99</td><td class="Q">7</td><td><a href="report-ace940.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ace940.html" -->
+</tr>
+<tr class="bt_logic_error_dereference_of_null_pointer"><td class="DESC">Logic error</td><td class="DESC">Dereference of null pointer</td><td>ev_dfg.c</td><td class="DESC">dfg_assoc_client</td><td class="Q">1830</td><td class="Q">7</td><td><a href="report-a231fb.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-a231fb.html" -->
+</tr>
+<tr class="bt_logic_error_function_call_with_too_few_arguments"><td class="DESC">Logic error</td><td class="DESC">Function call with too few arguments</td><td>cmenet.c</td><td class="DESC">cmenet_add_static_transport</td><td class="Q">966</td><td class="Q">2</td><td><a href="report-29146b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-29146b.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">server_listen</td><td class="Q">1996</td><td class="Q">10</td><td><a href="report-5dd926.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-5dd926.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm.c</td><td class="DESC">split_transport_attributes</td><td class="Q">504</td><td class="Q">19</td><td><a href="report-128c84.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-128c84.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>dfg_tests/named_stones.c</td><td class="DESC">be_test_master</td><td class="Q">157</td><td class="Q">2</td><td><a href="report-2a513a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-2a513a.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmprobe.c</td><td class="DESC">main</td><td class="Q">46</td><td class="Q">7</td><td><a href="report-7bbbf3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-7bbbf3.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>evp_compat.c</td><td class="DESC">old_create_multityped_action_spec</td><td class="Q">280</td><td class="Q">7</td><td><a href="report-831b51.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-831b51.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>evp.c</td><td class="DESC">internal_cm_network_submit</td><td class="Q">3239</td><td class="Q">6</td><td><a href="report-b37e94.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b37e94.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_perf.c</td><td class="DESC">Regression</td><td class="Q">849</td><td class="Q">18</td><td><a href="report-31bac0.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-31bac0.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_perf.c</td><td class="DESC">INT_CMregressive_probe_bandwidth</td><td class="Q">943</td><td class="Q">12</td><td><a href="report-84bde1.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-84bde1.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>evp.c</td><td class="DESC">INT_EVextract_stone_events</td><td class="Q">3660</td><td class="Q">4</td><td><a href="report-5d3617.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-5d3617.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>ev_dfg.c</td><td class="DESC">dfg_assoc_client</td><td class="Q">1887</td><td class="Q">16</td><td><a href="report-ce8962.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ce8962.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>response.c</td><td class="DESC">generate_filter_code</td><td class="Q">2188</td><td class="Q">33</td><td><a href="report-253303.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-253303.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">736</td><td class="Q">16</td><td><a href="report-975335.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-975335.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">client_connect</td><td class="Q">1431</td><td class="Q">18</td><td><a href="report-2d045a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-2d045a.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>dlloader.c</td><td class="DESC">CMdlopen</td><td class="Q">75</td><td class="Q">11</td><td><a href="report-ad7f8b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ad7f8b.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_perf.c</td><td class="DESC">Regression</td><td class="Q">848</td><td class="Q">3</td><td><a href="report-aeaa65.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-aeaa65.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>evp.c</td><td class="DESC">INT_EVsubmit_encoded</td><td class="Q">3408</td><td class="Q">10</td><td><a href="report-6b1c6f.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-6b1c6f.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm.c</td><td class="DESC">split_transport_attributes</td><td class="Q">466</td><td class="Q">7</td><td><a href="report-d99199.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d99199.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmib.c</td><td class="DESC">libcmib_LTX_writev_complete_notify_func</td><td class="Q">1888</td><td class="Q">16</td><td><a href="report-dcbdf4.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-dcbdf4.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>ev_dfg.c</td><td class="DESC">dfg_assoc_client</td><td class="Q">1887</td><td class="Q">16</td><td><a href="report-54a8d3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-54a8d3.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>dlloader.c</td><td class="DESC">CMdlopen</td><td class="Q">89</td><td class="Q">12</td><td><a href="report-3c8488.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3c8488.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">server_listen</td><td class="Q">2004</td><td class="Q">11</td><td><a href="report-2abfbc.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-2abfbc.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>ev_dfg.c</td><td class="DESC">flush_and_trigger</td><td class="Q">1340</td><td class="Q">8</td><td><a href="report-29a1dd.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-29a1dd.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_perf.c</td><td class="DESC">Regression</td><td class="Q">849</td><td class="Q">16</td><td><a href="report-7c3b57.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-7c3b57.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>ev_dfg.c</td><td class="DESC">INT_EVmaster_get_contact_list</td><td class="Q">1457</td><td class="Q">2</td><td><a href="report-ded7a6.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ded7a6.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">internal_write_request</td><td class="Q">514</td><td class="Q">31</td><td><a href="report-b277b9.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b277b9.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_pbio.c</td><td class="DESC">CM_pbio_query</td><td class="Q">765</td><td class="Q">14</td><td><a href="report-2107a2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-2107a2.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">internal_write_piggyback</td><td class="Q">403</td><td class="Q">15</td><td><a href="report-ee18a0.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ee18a0.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>ev_dfg.c</td><td class="DESC">dfg_assoc_client</td><td class="Q">1887</td><td class="Q">16</td><td><a href="report-4fce19.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-4fce19.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_pbio.c</td><td class="DESC">CMpbio_get_format_rep_callback</td><td class="Q">279</td><td class="Q">7</td><td><a href="report-50d1f0.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-50d1f0.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_perf.c</td><td class="DESC">INT_CMregressive_probe_bandwidth</td><td class="Q">943</td><td class="Q">12</td><td><a href="report-c120a5.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c120a5.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>evp.c</td><td class="DESC">reassign_memory_event</td><td class="Q">3337</td><td class="Q">21</td><td><a href="report-00ff71.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-00ff71.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>response.c</td><td class="DESC">generate_filter_code</td><td class="Q">2188</td><td class="Q">35</td><td><a href="report-17860b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-17860b.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmfabric.c</td><td class="DESC">libcmfabric_LTX_writev_complete_notify_func</td><td class="Q">2430</td><td class="Q">20</td><td><a href="report-8418c0.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-8418c0.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cm_formats.c</td><td class="DESC">INT_CMregister_simple_format</td><td class="Q">55</td><td class="Q">2</td><td><a href="report-81dcf7.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-81dcf7.html" -->
+</tr>
+<tr class="bt_memory_error_memory_leak"><td class="DESC">Memory error</td><td class="DESC">Memory leak</td><td>cmib.c</td><td class="DESC">findMemory</td><td class="Q">2456</td><td class="Q">11</td><td><a href="report-db78f2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-db78f2.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>cmfabric.c</td><td class="DESC">server_listen</td><td class="Q">1974</td><td class="Q">6</td><td><a href="report-40db88.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-40db88.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>metrics.c</td><td class="DESC">cpu_and_core_usage_func</td><td class="Q">195</td><td class="Q">3</td><td><a href="report-3ea3c2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3ea3c2.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>dfg_tests/tree_test.c</td><td class="DESC">be_test_master</td><td class="Q">120</td><td class="Q">12</td><td><a href="report-80b2a1.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-80b2a1.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>tests/bulktest.c</td><td class="DESC">main</td><td class="Q">472</td><td class="Q">21</td><td><a href="report-52c2a2.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-52c2a2.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>cm_perf.c</td><td class="DESC">dub_dp_free</td><td class="Q">787</td><td class="Q">10</td><td><a href="report-213922.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-213922.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>evp.c</td><td class="DESC">process_events_stone</td><td class="Q">1771</td><td class="Q">77</td><td><a href="report-74143a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-74143a.html" -->
+</tr>
+<tr class="bt_memory_error_use_of_zero_allocated"><td class="DESC">Memory error</td><td class="DESC">Use of zero allocated</td><td>cmfabric.c</td><td class="DESC">internal_write_piggyback</td><td class="Q">382</td><td class="Q">8</td><td><a href="report-46ea2b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-46ea2b.html" -->
+</tr>
+<tr class="bt_memory_error_use_of_zero_allocated"><td class="DESC">Memory error</td><td class="DESC">Use of zero allocated</td><td>cmib.c</td><td class="DESC">internal_write_piggyback</td><td class="Q">508</td><td class="Q">8</td><td><a href="report-b6a4a3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b6a4a3.html" -->
+</tr>
+<tr class="bt_memory_error_use_of_zero_allocated"><td class="DESC">Memory error</td><td class="DESC">Use of zero allocated</td><td>cmib.c</td><td class="DESC">createwrlist</td><td class="Q">2357</td><td class="Q">25</td><td><a href="report-7b6e01.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-7b6e01.html" -->
+</tr>
+</tbody>
+</table>
+
+</body></html>

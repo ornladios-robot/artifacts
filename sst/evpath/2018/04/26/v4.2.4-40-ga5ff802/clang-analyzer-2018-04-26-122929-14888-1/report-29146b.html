@@ -1,0 +1,1066 @@
+<!doctype html>
+<html>
+<head>
+<title>/home/chuck/Code/sst/EVPath/source/cmenet.c</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000;   border-radius:5px;  box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .msgNote { background-color:#ddeeff; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndex { border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align: right;
+   vertical-align: top;
+   font-weight: bold;
+   color:#444444;
+   padding-right:2ex;
+ }
+</style>
+</head>
+<body>
+<!-- BUGDESC Function taking 4 arguments is called with fewer (3) -->
+
+<!-- BUGTYPE Function call with too few arguments -->
+
+<!-- BUGCATEGORY Logic error -->
+
+<!-- BUGFILE /home/chuck/Code/sst/EVPath/source/cmenet.c -->
+
+<!-- FILENAME cmenet.c -->
+
+<!-- FUNCTIONNAME cmenet_add_static_transport -->
+
+<!-- ISSUEHASHCONTENTOFLINEINCONTEXT 6cd790b6e5231e973584fc9ef4f6b78b -->
+
+<!-- BUGLINE 966 -->
+
+<!-- BUGCOLUMN 26 -->
+
+<!-- BUGPATHLENGTH 2 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>cmenet.c</td></tr>
+<tr><td class="rowname">Warning:</td><td><a href="#EndPath">line 966, column 26</a><br />Function taking 4 arguments is called with fewer (3)</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='comment'>/***** Includes *****/</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='directive'>#include "config.h"</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='directive'>#if defined (__INTEL_COMPILER)</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='directive'>#  pragma warning (disable: 1418)</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='directive'>#undef NDEBUG</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='directive'>#include &lt;assert.h&gt;</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='directive'>#include &lt;stdlib.h&gt;</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='directive'>#include &lt;string.h&gt;</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='directive'>#include &lt;stdio.h&gt;</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='directive'>#include &lt;limits.h&gt;</span></td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='directive'>#include &lt;enet/enet.h&gt;</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='directive'>#include &lt;arpa/inet.h&gt;</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='directive'>#include &lt;time.h&gt;</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='directive'>#include &lt;sys/time.h&gt;</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='directive'>#ifdef __MACH__</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='directive'>#include &lt;mach/clock.h&gt;</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='directive'>#include &lt;mach/mach.h&gt;</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='directive'>#include &lt;atl.h&gt;</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='directive'>#include "evpath.h"</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='directive'>#include "cm_transport.h"</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='keyword'>typedef</span> <span class='keyword'>struct</span> _queued_data {</td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line">    <span class='keyword'>struct</span> _queued_data *next;</td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line">    <span class='keyword'>struct</span> enet_connection_data *econn_d;</td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line">    ENetPacket *packet;</td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line">} *queued_data;</td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='keyword'>typedef</span> <span class='keyword'>struct</span> func_list_item {</td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line">    select_list_func func;</td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line">    <span class='keyword'>void</span> *arg1;</td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line">    <span class='keyword'>void</span> *arg2;</td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line">} FunctionListElement;</td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='keyword'>typedef</span> <span class='keyword'>struct</span> enet_client_data {</td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line">    CManager cm;</td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line">    <span class='keyword'>char</span> *hostname;</td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line">    <span class='keyword'>int</span> listen_port;</td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line">    CMtrans_services svc;</td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line">    ENetHost *server;</td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line">    queued_data pending_data;</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line">    <span class='keyword'>int</span> wake_write_fd;</td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line">    <span class='keyword'>int</span> wake_read_fd;</td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line">} *enet_client_data_ptr;</td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"><span class='keyword'>typedef</span> <span class='keyword'>struct</span> enet_connection_data {</td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line">    <span class='keyword'>char</span> *remote_host;</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line">    <span class='keyword'>int</span> remote_IP;</td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">    <span class='keyword'>int</span> remote_contact_port;</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">    ENetPeer *peer;</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">    CMbuffer read_buffer;</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">    <span class='keyword'>int</span> read_buffer_len;</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">    ENetPacket *packet;</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">    enet_client_data_ptr sd;</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line">    CMConnection conn;</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">} *enet_conn_data_ptr;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line"><span class='keyword'>static</span> atom_t CM_PEER_IP = -1;</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line"><span class='keyword'>static</span> atom_t CM_PEER_LISTEN_PORT = -1;</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line"><span class='keyword'>static</span> atom_t CM_NETWORK_POSTFIX = -1;</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line"><span class='keyword'>static</span> atom_t CM_ENET_PORT = -1;</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line"><span class='keyword'>static</span> atom_t CM_ENET_HOSTNAME = -1;</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"><span class='keyword'>static</span> atom_t CM_ENET_ADDR = -1;</td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line"><span class='keyword'>static</span> atom_t CM_ENET_CONN_TIMEOUT = -1;</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line"><span class='keyword'>static</span> atom_t CM_TRANSPORT = -1;</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line"><span class='keyword'>extern</span> attr_list</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">libcmenet_LTX_non_blocking_listen(CManager cm, CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">				  transport_entry trans, attr_list listen_info);</td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">check_host(<span class='keyword'>char</span> *hostname, <span class='keyword'>void</span> *sin_addr)</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">    (<span class='keyword'>void</span>)hostname; (<span class='keyword'>void</span>)sin_addr;</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line"><span class='directive'>#ifdef HAS_STRUCT_HOSTEN</span></td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">    <span class='keyword'>struct</span> hostent *host_addr;</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line">    host_addr = gethostbyname(hostname);</td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">    <span class='keyword'>if</span> (host_addr == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">	<span class='keyword'>struct</span> in_addr addr;</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">	<span class='keyword'>if</span> (inet_aton(hostname, &amp;addr) == 0) {</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line">	    <span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">	     <span class='comment'>*  not translatable as a hostname or</span> </td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">	     <span class='comment'>* as a dot-style string IP address</span></td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">	     <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">	    <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">	<span class='macro'>assert(<span class='keyword'>sizeof</span>(<span class='keyword'>int</span>) == <span class='keyword'>sizeof</span>(<span class='keyword'>struct</span> in_addr))<span class='expansion'>((void) sizeof ((sizeof(int) == sizeof(struct in_addr)) ? 1 :<br> 0), __extension__ ({ if (sizeof(int) == sizeof(struct in_addr<br>)) ; else __assert_fail ("sizeof(int) == sizeof(struct in_addr)"<br>, "/home/chuck/Code/sst/EVPath/source/cmenet.c", 93, __extension__<br> __PRETTY_FUNCTION__); }))</span></span>;</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line">	*((<span class='keyword'>int</span> *) sin_addr) = *((<span class='keyword'>int</span>*) &amp;addr);</td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">	memcpy(sin_addr, host_addr-&gt;h_addr, host_addr-&gt;h_length);</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">    <span class='keyword'>return</span> 1;</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">    printf(<span class='string_literal'>"Check host called, unimplemented\n"</span>);</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">    <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line"><span class='keyword'>static</span> enet_conn_data_ptr </td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">create_enet_conn_data(CMtrans_services svc)</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">    enet_conn_data_ptr enet_conn_data =</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">    svc-&gt;malloc_func(<span class='keyword'>sizeof</span>(<span class='keyword'>struct</span> enet_connection_data));</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">    enet_conn_data-&gt;remote_host = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">    enet_conn_data-&gt;remote_contact_port = -1;</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">    enet_conn_data-&gt;read_buffer = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">    enet_conn_data-&gt;read_buffer_len = 1;</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">    <span class='keyword'>return</span> enet_conn_data;</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">enet_accept_conn(enet_client_data_ptr sd, transport_entry trans, </td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">		 ENetAddress *address);</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> free_func(<span class='keyword'>void</span> *packet)</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">    <span class='comment'>/* Clean up the packet now that we're done using it. */</span></td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">    enet_packet_destroy ((ENetPacket*)packet);</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">handle_packet(CManager cm, CMtrans_services svc, transport_entry trans, enet_conn_data_ptr econn_d, ENetPacket *packet)</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">    CMbuffer cb;</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"A packet of length %u was received.\n"</span>,</td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line">                   (<span class='keyword'>unsigned</span> <span class='keyword'>int</span>) packet-&gt;dataLength);</td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">    econn_d-&gt;read_buffer_len = packet-&gt;dataLength;</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line">    cb = svc-&gt;create_data_and_link_buffer(cm, </td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">                                          packet-&gt;data, </td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line">                                          econn_d-&gt;read_buffer_len);</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line">    econn_d-&gt;read_buffer = cb;</td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">    cb-&gt;return_callback = free_func;</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">    cb-&gt;return_callback_data = packet;</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line">    econn_d-&gt;packet = packet;</td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line">    <span class='comment'>/* kick this upstairs */</span></td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line">    trans-&gt;data_available(trans, econn_d-&gt;conn);</td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line">    svc-&gt;return_data_buffer(trans-&gt;cm, cb);</td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">	    </td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line"><span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">enet_service_network(CManager cm, <span class='keyword'>void</span> *void_trans)</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">    transport_entry trans = (transport_entry) void_trans;</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line">    enet_client_data_ptr ecd = (enet_client_data_ptr) trans-&gt;trans_data;</td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">    CMtrans_services svc = ecd-&gt;svc;</td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line">    ENetEvent event;</td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">    <span class='keyword'>if</span> (!ecd-&gt;server) <span class='keyword'>return</span>;</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">    <span class='keyword'>if</span> (!(<span class='macro'>CM_LOCKED(svc, ecd-&gt;cm)<span class='expansion'>(svc)-&gt;return_CM_lock_status((ecd-&gt;cm), "/home/chuck/Code/sst/EVPath/source/cmenet.c"<br>, 156)</span></span>)) {</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line">	printf(<span class='string_literal'>"Enet service network, CManager not locked\n"</span>);</td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">    <span class='keyword'>while</span> (ecd-&gt;pending_data) {</td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"ENET Handling pending data\n"</span>);</td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line">        queued_data entry = ecd-&gt;pending_data;</td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">        ecd-&gt;pending_data = entry-&gt;next;</td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">        handle_packet(cm, svc, trans, entry-&gt;econn_d, entry-&gt;packet);</td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">        free(entry);</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line">    <span class='keyword'>while</span> (ecd-&gt;server &amp;&amp; (enet_host_service (ecd-&gt;server, &amp; event, 0) &gt; 0)) {</td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">        <span class='keyword'>switch</span> (event.type) {</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">	<span class='keyword'>case</span> ENET_EVENT_TYPE_NONE:</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">        <span class='keyword'>case</span> ENET_EVENT_TYPE_CONNECT: {</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">	    <span class='keyword'>void</span> *enet_connection_data;</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line">	    svc-&gt;trace_out(cm, <span class='string_literal'>"A new client connected from %x:%u.\n"</span>, </td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line">			   event.peer-&gt;address.host,</td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">			   event.peer-&gt;address.port);</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">	    enet_connection_data = enet_accept_conn(ecd, trans, &amp;event.peer-&gt;address);</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">            <span class='comment'>/* Store any relevant client information here. */</span></td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line">            svc-&gt;trace_out(cm, <span class='string_literal'>"ENET ========   Assigning peer %p has data %p\n"</span>, event.peer, enet_connection_data);</td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">            event.peer-&gt;data = enet_connection_data;</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line">	    ((enet_conn_data_ptr)enet_connection_data)-&gt;peer = event.peer;</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">            <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line">        <span class='keyword'>case</span> ENET_EVENT_TYPE_RECEIVE: {</td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">	    enet_conn_data_ptr econn_d = event.peer-&gt;data;</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">            <span class='keyword'>if</span> (econn_d) {</td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">                handle_packet(cm, svc, trans, event.peer-&gt;data, event.packet);</td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">            } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">                svc-&gt;trace_out(cm, <span class='string_literal'>"ENET  ====== virgin peer, address is %x, port %u.\n"</span>, event.peer-&gt;address.host, event.peer-&gt;address.port);</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">                svc-&gt;trace_out(cm, <span class='string_literal'>"ENET  ====== DiSCARDING DATA\n"</span>);</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">            <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">	}           </td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">        <span class='keyword'>case</span> ENET_EVENT_TYPE_DISCONNECT: {</td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">	    enet_conn_data_ptr enet_conn_data = event.peer-&gt;data;</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line">	    svc-&gt;trace_out(cm, <span class='string_literal'>"Got a disconnect on connection %p\n"</span>,</td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">		event.peer-&gt;data);</td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">            enet_conn_data = event.peer-&gt;data;</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line">	    enet_conn_data-&gt;read_buffer_len = -1;</td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line">        }</td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line"><span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">read_wake_fd_and_service(CManager cm, <span class='keyword'>void</span> *void_trans)</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">    transport_entry trans = (transport_entry) void_trans;</td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">    enet_client_data_ptr ecd = (enet_client_data_ptr) trans-&gt;trans_data;</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">    <span class='keyword'>char</span> buffer;</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">    <span class='keyword'>int</span> fd = ecd-&gt;wake_read_fd;</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line"><span class='directive'>#ifdef HAVE_WINDOWS_H</span></td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">    recv(fd, &amp;buffer, 1, 0);</td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">    <span class='keyword'>if</span> (read(fd, &amp;buffer, 1) != 1) {</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">	perror(<span class='string_literal'>"wake read failed\n"</span>);</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line">    enet_service_network(cm, void_trans);</td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line"><span class='directive'>#ifdef NOTDEF</span></td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line"><span class='keyword'>void</span> </td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">dump_sockaddr(who, sa)</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line"><span class='keyword'>char</span> *who;</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line"><span class='keyword'>struct</span> sockaddr_in *sa;</td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">    <span class='keyword'>unsigned</span> <span class='keyword'>char</span> *addr;</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">    addr = (<span class='keyword'>unsigned</span> <span class='keyword'>char</span> *) &amp;(sa-&gt;sin_addr.s_addr);</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line">    printf(<span class='string_literal'>"%s: family=%d port=%d addr=%d.%d.%d.%d\n"</span>,</td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line">	   who,</td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line">	   ntohs(sa-&gt;sin_family),</td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line">	   ntohs(sa-&gt;sin_port),</td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">	   addr[0], addr[1], addr[2], addr[3]);</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line"><span class='keyword'>void</span> </td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">dump_sockinfo(msg, fd)</td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line"><span class='keyword'>char</span> *msg;</td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line"><span class='keyword'>int</span> fd;</td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">    <span class='keyword'>int</span> nl;</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">    <span class='keyword'>struct</span> sockaddr_in peer, me;</td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">    printf(<span class='string_literal'>"Dumping sockinfo for fd=%d: %s\n"</span>, fd, msg);</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">    nl = <span class='keyword'>sizeof</span>(me);</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">    getsockname(fd, (<span class='keyword'>struct</span> sockaddr *) &amp;me, &amp;nl);</td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">    dump_sockaddr(<span class='string_literal'>"Me"</span>, &amp;me);</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">    nl = <span class='keyword'>sizeof</span>(peer);</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line">    getpeername(fd, (<span class='keyword'>struct</span> sockaddr *) &amp;peer, &amp;nl);</td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line">    dump_sockaddr(<span class='string_literal'>"Peer"</span>, &amp;peer);</td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line"> <span class='comment'>* Accept enet connection</span></td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line">enet_accept_conn(enet_client_data_ptr sd, transport_entry trans, </td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">		 ENetAddress *address)</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">    CMtrans_services svc = sd-&gt;svc;</td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">    enet_conn_data_ptr enet_conn_data;</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line">    CMConnection conn;</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">    attr_list conn_attr_list = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;;</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line">    enet_conn_data = create_enet_conn_data(svc);</td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line">    enet_conn_data-&gt;sd = sd;</td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line">    conn_attr_list = create_attr_list();</td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line">    conn = svc-&gt;connection_create(trans, enet_conn_data, conn_attr_list);</td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line">    enet_conn_data-&gt;conn = conn;</td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line">    add_attr(conn_attr_list, CM_PEER_IP, Attr_Int4, (<span class='keyword'>void</span>*)(<span class='keyword'>long</span>)address-&gt;host);</td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line">    enet_conn_data-&gt;remote_IP = ntohl(address-&gt;host);</td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line">    enet_conn_data-&gt;remote_contact_port = address-&gt;port;</td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">    <span class='keyword'>if</span> (enet_conn_data-&gt;remote_host != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line">	svc-&gt;trace_out(trans-&gt;cm, <span class='string_literal'>"Accepted ENET RUDP connection from host \"%s\""</span>,</td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line">		       enet_conn_data-&gt;remote_host);</td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line">	svc-&gt;trace_out(trans-&gt;cm, <span class='string_literal'>"Accepted ENET RUDP connection from UNKNOWN host"</span>);</td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line">    add_attr(conn_attr_list, CM_PEER_LISTEN_PORT, Attr_Int4,</td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">	     (attr_value) (<span class='keyword'>long</span>)enet_conn_data-&gt;remote_contact_port);</td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line">    svc-&gt;trace_out(trans-&gt;cm, <span class='string_literal'>"Remote host (IP %x) is listening at port %d\n"</span>,</td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line">		   enet_conn_data-&gt;remote_IP,</td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line">		   enet_conn_data-&gt;remote_contact_port);</td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line">    free_attr_list(conn_attr_list);</td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line">    <span class='keyword'>return</span> enet_conn_data;</td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line">libcmenet_LTX_shutdown_conn(CMtrans_services svc, enet_conn_data_ptr scd)</td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line">    svc-&gt;connection_deref(scd-&gt;conn);</td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line">    <span class='keyword'>if</span> (scd-&gt;remote_host) free(scd-&gt;remote_host);</td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">    free(scd);</td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line">initiate_conn(CManager cm, CMtrans_services svc, transport_entry trans,</td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line">	      attr_list attrs, enet_conn_data_ptr enet_conn_data,</td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line">	      attr_list conn_attr_list)</td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line">    <span class='keyword'>int</span> int_port_num;</td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line">    enet_client_data_ptr sd = (enet_client_data_ptr) trans-&gt;trans_data;</td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">    <span class='keyword'>char</span> *host_name;</td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">    <span class='keyword'>int</span> host_ip = 0;</td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line">    <span class='keyword'>struct</span> in_addr sin_addr;</td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">    (<span class='keyword'>void</span>)conn_attr_list;</td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">    <span class='keyword'>int</span> timeout = 5000;   <span class='comment'>/* connection time out default 5 seconds */</span></td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_HOSTNAME, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; host_name)) {</td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport found no CM_ENET_HOSTNAME attribute"</span>);</td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">	host_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport connect to host %s"</span>, host_name);</td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_ADDR, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; host_ip)) {</td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport found no CM_ENET_ADDR attribute"</span>);</td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line">	<span class='comment'>/* wasn't there */</span></td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line">	host_ip = 0;</td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport connect to host_IP %lx"</span>, host_ip);</td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line">    <span class='keyword'>if</span> ((host_name == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) &amp;&amp; (host_ip == 0)) {</td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line">	printf(<span class='string_literal'>"No host no IP\n"</span>);</td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_PORT, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; int_port_num)) {</td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport found no CM_ENET_PORT attribute"</span>);</td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport connect to port %d"</span>, int_port_num);</td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_CONN_TIMEOUT, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; timeout)) {</td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport found no CM_ENET_CONN_TIMEOUT attribute"</span>);</td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport connection timeout set to %d msecs"</span>, timeout);</td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line">    <span class='comment'>/* ENET connection, host_name is the machine name */</span></td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line">    ENetAddress address;</td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line">    ENetEvent event;</td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line">    ENetPeer *peer;</td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line">    sin_addr.s_addr = host_ip;</td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line">    <span class='keyword'>if</span> (host_name) {</td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line">	enet_address_set_host (&amp; address, host_name);</td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line">	sin_addr.s_addr = ntohl(address.host);</td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"Attempting ENET RUDP connection, USING host=\"%s\", IP = %s, port %d"</span>,</td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line">		       host_name == 0 ? <span class='string_literal'>"(unknown)"</span> : host_name, </td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line">		       inet_ntoa(sin_addr),</td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line">		       int_port_num);</td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line">	address.host = ntohl(host_ip);</td></tr>
+<tr><td class="num" id="LN380">380</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"Attempting ENET RUDP connection, USING IP = %s, port %d"</span>,</td></tr>
+<tr><td class="num" id="LN381">381</td><td class="line">		       inet_ntoa(sin_addr),</td></tr>
+<tr><td class="num" id="LN382">382</td><td class="line">		       int_port_num);</td></tr>
+<tr><td class="num" id="LN383">383</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN384">384</td><td class="line">    address.port = (<span class='keyword'>unsigned</span> <span class='keyword'>short</span>) int_port_num;</td></tr>
+<tr><td class="num" id="LN385">385</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN386">386</td><td class="line">    <span class='keyword'>if</span> (sd-&gt;server == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN387">387</td><td class="line">	attr_list l = libcmenet_LTX_non_blocking_listen(cm, svc, trans, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>);</td></tr>
+<tr><td class="num" id="LN388">388</td><td class="line">	<span class='keyword'>if</span> (l) free_attr_list(l);</td></tr>
+<tr><td class="num" id="LN389">389</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN390">390</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN391">391</td><td class="line">    <span class='comment'>/* Initiate the connection, allocating the two channels 0 and 1. */</span></td></tr>
+<tr><td class="num" id="LN392">392</td><td class="line">    peer = enet_host_connect (sd-&gt;server, &amp; address, 1, 0);    </td></tr>
+<tr><td class="num" id="LN393">393</td><td class="line">    peer-&gt;data = enet_conn_data;</td></tr>
+<tr><td class="num" id="LN394">394</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"ENET ========   On init Assigning peer %p has data %p\n"</span>, peer, enet_conn_data);</td></tr>
+<tr><td class="num" id="LN395">395</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN396">396</td><td class="line">    <span class='keyword'>if</span> (peer == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN397">397</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN398">398</td><td class="line">       fprintf (<span class='macro'>stderr<span class='expansion'>stderr</span></span>, </td></tr>
+<tr><td class="num" id="LN399">399</td><td class="line">                <span class='string_literal'>"No available peers for initiating an ENet connection.\n"</span>);</td></tr>
+<tr><td class="num" id="LN400">400</td><td class="line">       exit (<span class='macro'>EXIT_FAILURE<span class='expansion'>1</span></span>);</td></tr>
+<tr><td class="num" id="LN401">401</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN402">402</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN403">403</td><td class="line">    <span class='comment'>/* Wait up to 'timeout' milliseconds for the connection attempt to succeed. */</span></td></tr>
+<tr><td class="num" id="LN404">404</td><td class="line">retry:</td></tr>
+<tr><td class="num" id="LN405">405</td><td class="line">    <span class='keyword'>if</span> ((enet_host_service (sd-&gt;server, &amp; event, timeout) &gt; 0) &amp;&amp;</td></tr>
+<tr><td class="num" id="LN406">406</td><td class="line">        (event.type == ENET_EVENT_TYPE_CONNECT)) {</td></tr>
+<tr><td class="num" id="LN407">407</td><td class="line">        <span class='keyword'>if</span> (event.peer != peer) {</td></tr>
+<tr><td class="num" id="LN408">408</td><td class="line">            enet_conn_data_ptr enet_connection_data;</td></tr>
+<tr><td class="num" id="LN409">409</td><td class="line">	    svc-&gt;trace_out(cm, <span class='string_literal'>"A new client connected from %x:%u.\n"</span>, </td></tr>
+<tr><td class="num" id="LN410">410</td><td class="line">			   event.peer-&gt;address.host,</td></tr>
+<tr><td class="num" id="LN411">411</td><td class="line">			   event.peer-&gt;address.port);</td></tr>
+<tr><td class="num" id="LN412">412</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN413">413</td><td class="line">	    enet_connection_data = enet_accept_conn(sd, trans, &amp;event.peer-&gt;address);</td></tr>
+<tr><td class="num" id="LN414">414</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN415">415</td><td class="line">            <span class='comment'>/* Store any relevant client information here. */</span></td></tr>
+<tr><td class="num" id="LN416">416</td><td class="line">            svc-&gt;trace_out(cm, <span class='string_literal'>"ENET ========   Assigning peer %p has data %p\n"</span>, event.peer, enet_connection_data);</td></tr>
+<tr><td class="num" id="LN417">417</td><td class="line">            event.peer-&gt;data = enet_connection_data;</td></tr>
+<tr><td class="num" id="LN418">418</td><td class="line">	    ((enet_conn_data_ptr)enet_connection_data)-&gt;peer = event.peer;</td></tr>
+<tr><td class="num" id="LN419">419</td><td class="line">            <span class='keyword'>goto</span> retry;</td></tr>
+<tr><td class="num" id="LN420">420</td><td class="line">        }</td></tr>
+<tr><td class="num" id="LN421">421</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"Connection to %s:%d succeeded.\n"</span>, inet_ntoa(sin_addr), address.port);</td></tr>
+<tr><td class="num" id="LN422">422</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN423">423</td><td class="line">        <span class='keyword'>if</span> ((event.type == ENET_EVENT_TYPE_DISCONNECT) ||</td></tr>
+<tr><td class="num" id="LN424">424</td><td class="line">            (event.type == ENET_EVENT_TYPE_NONE)) {</td></tr>
+<tr><td class="num" id="LN425">425</td><td class="line">            <span class='comment'>/* Either the 5 seconds are up or a disconnect event was */</span></td></tr>
+<tr><td class="num" id="LN426">426</td><td class="line">            <span class='comment'>/* received. Reset the peer in the event the 5 seconds   */</span></td></tr>
+<tr><td class="num" id="LN427">427</td><td class="line">            <span class='comment'>/* had run out without any significant event.            */</span></td></tr>
+<tr><td class="num" id="LN428">428</td><td class="line">            enet_peer_reset (peer);</td></tr>
+<tr><td class="num" id="LN429">429</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN430">430</td><td class="line">            svc-&gt;trace_out(cm, <span class='string_literal'>"Connection to %s:%d failed   type was %d.\n"</span>, inet_ntoa(sin_addr), address.port, event.type);</td></tr>
+<tr><td class="num" id="LN431">431</td><td class="line">            <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN432">432</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN433">433</td><td class="line">        } <span class='keyword'>else</span> <span class='keyword'>if</span> (event.type == ENET_EVENT_TYPE_RECEIVE) {</td></tr>
+<tr><td class="num" id="LN434">434</td><td class="line">	    enet_conn_data_ptr econn_d = event.peer-&gt;data;</td></tr>
+<tr><td class="num" id="LN435">435</td><td class="line">            queued_data entry = malloc(<span class='keyword'>sizeof</span>(*entry));</td></tr>
+<tr><td class="num" id="LN436">436</td><td class="line">            entry-&gt;next = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN437">437</td><td class="line">            entry-&gt;econn_d = econn_d;</td></tr>
+<tr><td class="num" id="LN438">438</td><td class="line">            entry-&gt;packet = event.packet;</td></tr>
+<tr><td class="num" id="LN439">439</td><td class="line">            <span class='comment'>/* add at the end */</span></td></tr>
+<tr><td class="num" id="LN440">440</td><td class="line">            <span class='keyword'>if</span> (econn_d-&gt;sd-&gt;pending_data == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN441">441</td><td class="line">                econn_d-&gt;sd-&gt;pending_data = entry;</td></tr>
+<tr><td class="num" id="LN442">442</td><td class="line">            } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN443">443</td><td class="line">                queued_data last = econn_d-&gt;sd-&gt;pending_data;</td></tr>
+<tr><td class="num" id="LN444">444</td><td class="line">                <span class='keyword'>while</span> (last-&gt;next != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN445">445</td><td class="line">                    last = last-&gt;next;</td></tr>
+<tr><td class="num" id="LN446">446</td><td class="line">                }</td></tr>
+<tr><td class="num" id="LN447">447</td><td class="line">                last-&gt;next = entry;</td></tr>
+<tr><td class="num" id="LN448">448</td><td class="line">            }</td></tr>
+<tr><td class="num" id="LN449">449</td><td class="line">            <span class='keyword'>goto</span> retry;</td></tr>
+<tr><td class="num" id="LN450">450</td><td class="line">        }</td></tr>
+<tr><td class="num" id="LN451">451</td><td class="line">            </td></tr>
+<tr><td class="num" id="LN452">452</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN453">453</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN454">454</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"--&gt; Connection established"</span>);</td></tr>
+<tr><td class="num" id="LN455">455</td><td class="line">    enet_conn_data-&gt;remote_host = host_name == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span> ? <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span> : strdup(host_name);</td></tr>
+<tr><td class="num" id="LN456">456</td><td class="line">    enet_conn_data-&gt;remote_IP = htonl(host_ip);</td></tr>
+<tr><td class="num" id="LN457">457</td><td class="line">    enet_conn_data-&gt;remote_contact_port = int_port_num;</td></tr>
+<tr><td class="num" id="LN458">458</td><td class="line">    enet_conn_data-&gt;sd = sd;</td></tr>
+<tr><td class="num" id="LN459">459</td><td class="line">    enet_conn_data-&gt;peer = peer;</td></tr>
+<tr><td class="num" id="LN460">460</td><td class="line">    peer-&gt;data = enet_conn_data;</td></tr>
+<tr><td class="num" id="LN461">461</td><td class="line">    <span class='keyword'>return</span> 1;</td></tr>
+<tr><td class="num" id="LN462">462</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN463">463</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN464">464</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN465">465</td><td class="line"> <span class='comment'>* Initiate a ENET RUDP connection with another CM.</span></td></tr>
+<tr><td class="num" id="LN466">466</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN467">467</td><td class="line"><span class='keyword'>extern</span> CMConnection</td></tr>
+<tr><td class="num" id="LN468">468</td><td class="line">libcmenet_LTX_initiate_conn(CManager cm, CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN469">469</td><td class="line">			    transport_entry trans, attr_list attrs)</td></tr>
+<tr><td class="num" id="LN470">470</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN471">471</td><td class="line">    enet_conn_data_ptr enet_conn_data = create_enet_conn_data(svc);</td></tr>
+<tr><td class="num" id="LN472">472</td><td class="line">    attr_list conn_attr_list = create_attr_list();</td></tr>
+<tr><td class="num" id="LN473">473</td><td class="line">    CMConnection conn;</td></tr>
+<tr><td class="num" id="LN474">474</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN475">475</td><td class="line">    <span class='keyword'>if</span> (!initiate_conn(cm, svc, trans, attrs, enet_conn_data, conn_attr_list))</td></tr>
+<tr><td class="num" id="LN476">476</td><td class="line">	<span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN477">477</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN478">478</td><td class="line">    add_attr(conn_attr_list, CM_PEER_LISTEN_PORT, Attr_Int4,</td></tr>
+<tr><td class="num" id="LN479">479</td><td class="line">	     (attr_value) (<span class='keyword'>long</span>)enet_conn_data-&gt;remote_contact_port);</td></tr>
+<tr><td class="num" id="LN480">480</td><td class="line">    conn = svc-&gt;connection_create(trans, enet_conn_data, conn_attr_list);</td></tr>
+<tr><td class="num" id="LN481">481</td><td class="line">    enet_conn_data-&gt;conn = conn;</td></tr>
+<tr><td class="num" id="LN482">482</td><td class="line">    free_attr_list(conn_attr_list);</td></tr>
+<tr><td class="num" id="LN483">483</td><td class="line">    svc-&gt;connection_addref(conn);  <span class='comment'>/* one ref count went to CM,</span> </td></tr>
+<tr><td class="num" id="LN484">484</td><td class="line">				<span class='comment'>the other to the user */</span></td></tr>
+<tr><td class="num" id="LN485">485</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN486">486</td><td class="line">    <span class='keyword'>return</span> conn;</td></tr>
+<tr><td class="num" id="LN487">487</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN488">488</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN489">489</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN490">490</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN491">491</td><td class="line"> <span class='comment'>* Check to see that if we were to attempt to initiate a connection as</span></td></tr>
+<tr><td class="num" id="LN492">492</td><td class="line"> <span class='comment'>* indicated by the attribute list, would we be connecting to ourselves?</span></td></tr>
+<tr><td class="num" id="LN493">493</td><td class="line"> <span class='comment'>* For enet, this involves checking to see if the host name is the</span> </td></tr>
+<tr><td class="num" id="LN494">494</td><td class="line"> <span class='comment'>* same as ours and if the CM_ENET_PORT matches the one we are listening on.</span></td></tr>
+<tr><td class="num" id="LN495">495</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN496">496</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN497">497</td><td class="line">libcmenet_LTX_self_check(CManager cm, CMtrans_services svc, </td></tr>
+<tr><td class="num" id="LN498">498</td><td class="line">			 transport_entry trans, attr_list attrs)</td></tr>
+<tr><td class="num" id="LN499">499</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN500">500</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN501">501</td><td class="line">    enet_client_data_ptr sd = trans-&gt;trans_data;</td></tr>
+<tr><td class="num" id="LN502">502</td><td class="line">    <span class='keyword'>int</span> host_addr;</td></tr>
+<tr><td class="num" id="LN503">503</td><td class="line">    <span class='keyword'>int</span> int_port_num;</td></tr>
+<tr><td class="num" id="LN504">504</td><td class="line">    <span class='keyword'>char</span> *host_name;</td></tr>
+<tr><td class="num" id="LN505">505</td><td class="line">    <span class='keyword'>char</span> my_host_name[256];</td></tr>
+<tr><td class="num" id="LN506">506</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> IP = 0;</td></tr>
+<tr><td class="num" id="LN507">507</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN508">508</td><td class="line">    get_IP_config(my_host_name, <span class='keyword'>sizeof</span>(host_name), &amp;IP, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN509">509</td><td class="line">		  <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, svc-&gt;trace_out, (<span class='keyword'>void</span> *)cm);</td></tr>
+<tr><td class="num" id="LN510">510</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN511">511</td><td class="line">    <span class='keyword'>if</span> (IP == 0) {</td></tr>
+<tr><td class="num" id="LN512">512</td><td class="line">	IP = ntohl(<span class='macro'>INADDR_LOOPBACK<span class='expansion'>((in_addr_t) 0x7f000001)</span></span>);</td></tr>
+<tr><td class="num" id="LN513">513</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN514">514</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_HOSTNAME, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN515">515</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; host_name)) {</td></tr>
+<tr><td class="num" id="LN516">516</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check CMEnet transport found no CM_ENET_HOSTNAME attribute"</span>);</td></tr>
+<tr><td class="num" id="LN517">517</td><td class="line">	host_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN518">518</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN519">519</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_ADDR, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN520">520</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; host_addr)) {</td></tr>
+<tr><td class="num" id="LN521">521</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check CMEnet transport found no CM_ENET_ADDR attribute"</span>);</td></tr>
+<tr><td class="num" id="LN522">522</td><td class="line">	<span class='keyword'>if</span> (host_name == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN523">523</td><td class="line">	host_addr = 0;</td></tr>
+<tr><td class="num" id="LN524">524</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN525">525</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_PORT, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN526">526</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; int_port_num)) {</td></tr>
+<tr><td class="num" id="LN527">527</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check CMEnet transport found no CM_ENET_PORT attribute"</span>);</td></tr>
+<tr><td class="num" id="LN528">528</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN529">529</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN530">530</td><td class="line">    <span class='comment'>//get_qual_hostname(my_host_name, sizeof(my_host_name), svc, NULL, NULL);</span></td></tr>
+<tr><td class="num" id="LN531">531</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN532">532</td><td class="line">    <span class='keyword'>if</span> (host_name &amp;&amp; (strcmp(host_name, my_host_name) != 0)) {</td></tr>
+<tr><td class="num" id="LN533">533</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check - Hostnames don't match"</span>);</td></tr>
+<tr><td class="num" id="LN534">534</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN535">535</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN536">536</td><td class="line">    <span class='keyword'>if</span> (host_addr &amp;&amp; (IP != host_addr)) {</td></tr>
+<tr><td class="num" id="LN537">537</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check - Host IP addrs don't match, %lx, %lx"</span>, IP, host_addr);</td></tr>
+<tr><td class="num" id="LN538">538</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN539">539</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN540">540</td><td class="line">    <span class='keyword'>if</span> (int_port_num != sd-&gt;listen_port) {</td></tr>
+<tr><td class="num" id="LN541">541</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check - Ports don't match, %d, %d"</span>, int_port_num, sd-&gt;listen_port);</td></tr>
+<tr><td class="num" id="LN542">542</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN543">543</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN544">544</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"CMself check returning TRUE"</span>);</td></tr>
+<tr><td class="num" id="LN545">545</td><td class="line">    <span class='keyword'>return</span> 1;</td></tr>
+<tr><td class="num" id="LN546">546</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN547">547</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN548">548</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN549">549</td><td class="line">libcmenet_LTX_connection_eq(CManager cm, CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN550">550</td><td class="line">			    transport_entry trans, attr_list attrs,</td></tr>
+<tr><td class="num" id="LN551">551</td><td class="line">			    enet_conn_data_ptr ecd)</td></tr>
+<tr><td class="num" id="LN552">552</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN553">553</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN554">554</td><td class="line">    <span class='keyword'>int</span> int_port_num;</td></tr>
+<tr><td class="num" id="LN555">555</td><td class="line">    <span class='keyword'>int</span> requested_IP = -1;</td></tr>
+<tr><td class="num" id="LN556">556</td><td class="line">    <span class='keyword'>char</span> *host_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN557">557</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN558">558</td><td class="line">    (<span class='keyword'>void</span>) trans;</td></tr>
+<tr><td class="num" id="LN559">559</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_HOSTNAME, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN560">560</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; host_name)) {</td></tr>
+<tr><td class="num" id="LN561">561</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet transport found no CM_ENET_HOST attribute"</span>);</td></tr>
+<tr><td class="num" id="LN562">562</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN563">563</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_PORT, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN564">564</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; int_port_num)) {</td></tr>
+<tr><td class="num" id="LN565">565</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"Conn Eq CMenet transport found no CM_ENET_PORT attribute"</span>);</td></tr>
+<tr><td class="num" id="LN566">566</td><td class="line">	<span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN567">567</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN568">568</td><td class="line">    <span class='keyword'>if</span> (!query_attr(attrs, CM_ENET_ADDR, <span class='comment'>/* type pointer */</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN569">569</td><td class="line">    <span class='comment'>/* value pointer */</span> (attr_value *)(<span class='keyword'>long</span>) &amp; requested_IP)) {</td></tr>
+<tr><td class="num" id="LN570">570</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMENET transport found no CM_ENET_ADDR attribute"</span>);</td></tr>
+<tr><td class="num" id="LN571">571</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN572">572</td><td class="line">    <span class='keyword'>if</span> (requested_IP == -1) {</td></tr>
+<tr><td class="num" id="LN573">573</td><td class="line">	check_host(host_name, (<span class='keyword'>void</span> *) &amp;requested_IP);</td></tr>
+<tr><td class="num" id="LN574">574</td><td class="line">	requested_IP = ntohl(requested_IP);</td></tr>
+<tr><td class="num" id="LN575">575</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"IP translation for hostname %s is %x"</span>, host_name,</td></tr>
+<tr><td class="num" id="LN576">576</td><td class="line">		       requested_IP);</td></tr>
+<tr><td class="num" id="LN577">577</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN578">578</td><td class="line">    <span class='keyword'>if</span> (ecd-&gt;peer-&gt;state != ENET_PEER_STATE_CONNECTED) {</td></tr>
+<tr><td class="num" id="LN579">579</td><td class="line">        svc-&gt;trace_out(cm, <span class='string_literal'>"ENET Conn_eq returning FALSE, peer not connected"</span>);</td></tr>
+<tr><td class="num" id="LN580">580</td><td class="line">        <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN581">581</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN582">582</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"ENET Conn_eq comparing IP/ports %x/%d and %x/%d"</span>,</td></tr>
+<tr><td class="num" id="LN583">583</td><td class="line">		   ecd-&gt;remote_IP, ecd-&gt;remote_contact_port,</td></tr>
+<tr><td class="num" id="LN584">584</td><td class="line">		   requested_IP, int_port_num);</td></tr>
+<tr><td class="num" id="LN585">585</td><td class="line">    <span class='keyword'>if</span> ((ecd-&gt;remote_IP == requested_IP) &amp;&amp;</td></tr>
+<tr><td class="num" id="LN586">586</td><td class="line">	(ecd-&gt;remote_contact_port == int_port_num)) {</td></tr>
+<tr><td class="num" id="LN587">587</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"ENET Conn_eq returning TRUE"</span>);</td></tr>
+<tr><td class="num" id="LN588">588</td><td class="line">	<span class='keyword'>return</span> 1;</td></tr>
+<tr><td class="num" id="LN589">589</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN590">590</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"ENET Conn_eq returning FALSE"</span>);</td></tr>
+<tr><td class="num" id="LN591">591</td><td class="line">    <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN592">592</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN593">593</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN594">594</td><td class="line"><span class='keyword'>static</span> attr_list</td></tr>
+<tr><td class="num" id="LN595">595</td><td class="line">build_listen_attrs(CManager cm, CMtrans_services svc, enet_client_data_ptr sd,</td></tr>
+<tr><td class="num" id="LN596">596</td><td class="line">		   attr_list listen_info, <span class='keyword'>int</span> int_port_num)</td></tr>
+<tr><td class="num" id="LN597">597</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN598">598</td><td class="line">    <span class='keyword'>char</span> host_name[256];</td></tr>
+<tr><td class="num" id="LN599">599</td><td class="line">    attr_list ret_list;</td></tr>
+<tr><td class="num" id="LN600">600</td><td class="line">    <span class='keyword'>int</span> IP;</td></tr>
+<tr><td class="num" id="LN601">601</td><td class="line">    <span class='keyword'>int</span> use_hostname = 0;</td></tr>
+<tr><td class="num" id="LN602">602</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN603">603</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet listen succeeded on port %d"</span>,</td></tr>
+<tr><td class="num" id="LN604">604</td><td class="line">		       int_port_num);</td></tr>
+<tr><td class="num" id="LN605">605</td><td class="line">    get_IP_config(host_name, <span class='keyword'>sizeof</span>(host_name), &amp;IP, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>,</td></tr>
+<tr><td class="num" id="LN606">606</td><td class="line">		  &amp;use_hostname, listen_info, svc-&gt;trace_out, (<span class='keyword'>void</span> *)cm);</td></tr>
+<tr><td class="num" id="LN607">607</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN608">608</td><td class="line">    ret_list = create_attr_list();</td></tr>
+<tr><td class="num" id="LN609">609</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN610">610</td><td class="line">    <span class='keyword'>if</span> (sd) {</td></tr>
+<tr><td class="num" id="LN611">611</td><td class="line">	sd-&gt;hostname = strdup(host_name);</td></tr>
+<tr><td class="num" id="LN612">612</td><td class="line">	sd-&gt;listen_port = int_port_num;</td></tr>
+<tr><td class="num" id="LN613">613</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN614">614</td><td class="line">    <span class='keyword'>if</span> ((IP != 0) &amp;&amp; !use_hostname) {</td></tr>
+<tr><td class="num" id="LN615">615</td><td class="line">	add_attr(ret_list, CM_ENET_ADDR, Attr_Int4,</td></tr>
+<tr><td class="num" id="LN616">616</td><td class="line">		 (attr_value) (<span class='keyword'>long</span>)IP);</td></tr>
+<tr><td class="num" id="LN617">617</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN618">618</td><td class="line">    <span class='keyword'>if</span> ((getenv(<span class='string_literal'>"CMEnetsUseHostname"</span>) != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) || </td></tr>
+<tr><td class="num" id="LN619">619</td><td class="line">	use_hostname) {</td></tr>
+<tr><td class="num" id="LN620">620</td><td class="line">	add_attr(ret_list, CM_ENET_HOSTNAME, Attr_String,</td></tr>
+<tr><td class="num" id="LN621">621</td><td class="line">		 (attr_value) strdup(host_name));</td></tr>
+<tr><td class="num" id="LN622">622</td><td class="line">    } <span class='keyword'>else</span> <span class='keyword'>if</span> (IP == 0) {</td></tr>
+<tr><td class="num" id="LN623">623</td><td class="line">        add_int_attr(ret_list, CM_ENET_ADDR, <span class='macro'>INADDR_LOOPBACK<span class='expansion'>((in_addr_t) 0x7f000001)</span></span>);</td></tr>
+<tr><td class="num" id="LN624">624</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN625">625</td><td class="line">    add_attr(ret_list, CM_ENET_PORT, Attr_Int4,</td></tr>
+<tr><td class="num" id="LN626">626</td><td class="line">	     (attr_value) (<span class='keyword'>long</span>)int_port_num);</td></tr>
+<tr><td class="num" id="LN627">627</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN628">628</td><td class="line">    add_attr(ret_list, CM_TRANSPORT, Attr_String,</td></tr>
+<tr><td class="num" id="LN629">629</td><td class="line">	     (attr_value) strdup(<span class='string_literal'>"enet"</span>));</td></tr>
+<tr><td class="num" id="LN630">630</td><td class="line">    <span class='keyword'>return</span> ret_list;</td></tr>
+<tr><td class="num" id="LN631">631</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN632">632</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN633">633</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN634">634</td><td class="line">wake_enet_server_thread(enet_client_data_ptr enet_data)</td></tr>
+<tr><td class="num" id="LN635">635</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN636">636</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>char</span> buffer = 'W';  <span class='comment'>/* doesn't matter what we write */</span></td></tr>
+<tr><td class="num" id="LN637">637</td><td class="line">    <span class='keyword'>if</span> (enet_data-&gt;wake_write_fd != -1) {</td></tr>
+<tr><td class="num" id="LN638">638</td><td class="line"><span class='directive'>#ifdef HAVE_WINDOWS_H</span></td></tr>
+<tr><td class="num" id="LN639">639</td><td class="line">	send(enet_data-&gt;wake_write_fd, &amp;buffer, 1, 0);</td></tr>
+<tr><td class="num" id="LN640">640</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN641">641</td><td class="line">	<span class='keyword'>if</span> (write(enet_data-&gt;wake_write_fd, &amp;buffer, 1) != 1) {</td></tr>
+<tr><td class="num" id="LN642">642</td><td class="line">	    printf(<span class='string_literal'>"Whoops, wake write failed\n"</span>);</td></tr>
+<tr><td class="num" id="LN643">643</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN644">644</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN645">645</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN646">646</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN647">647</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN648">648</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN649">649</td><td class="line"> <span class='comment'>* Create an IP socket for connection from other CMs</span></td></tr>
+<tr><td class="num" id="LN650">650</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN651">651</td><td class="line"><span class='keyword'>extern</span> attr_list</td></tr>
+<tr><td class="num" id="LN652">652</td><td class="line">libcmenet_LTX_non_blocking_listen(CManager cm, CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN653">653</td><td class="line">				  transport_entry trans, attr_list listen_info)</td></tr>
+<tr><td class="num" id="LN654">654</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN655">655</td><td class="line">    enet_client_data_ptr enet_data = trans-&gt;trans_data;</td></tr>
+<tr><td class="num" id="LN656">656</td><td class="line">    ENetAddress address;</td></tr>
+<tr><td class="num" id="LN657">657</td><td class="line">    ENetHost * server;</td></tr>
+<tr><td class="num" id="LN658">658</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN659">659</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN660">660</td><td class="line">    <span class='keyword'>int</span> attr_port_num = 0;</td></tr>
+<tr><td class="num" id="LN661">661</td><td class="line">    u_short port_num = 0;</td></tr>
+<tr><td class="num" id="LN662">662</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN663">663</td><td class="line">    <span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN664">664</td><td class="line">     <span class='comment'>*  Check to see if a bind to a specific port was requested</span></td></tr>
+<tr><td class="num" id="LN665">665</td><td class="line">     <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN666">666</td><td class="line">    <span class='keyword'>if</span> (listen_info != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span></td></tr>
+<tr><td class="num" id="LN667">667</td><td class="line">	&amp;&amp; !query_attr(listen_info, CM_ENET_PORT,</td></tr>
+<tr><td class="num" id="LN668">668</td><td class="line">		       <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, (attr_value *)(<span class='keyword'>long</span>) &amp; attr_port_num)) {</td></tr>
+<tr><td class="num" id="LN669">669</td><td class="line">	port_num = 0;</td></tr>
+<tr><td class="num" id="LN670">670</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN671">671</td><td class="line">	<span class='keyword'>if</span> (attr_port_num &gt; <span class='macro'>USHRT_MAX<span class='expansion'>(32767 *2 +1)</span></span> || attr_port_num &lt; 0) {</td></tr>
+<tr><td class="num" id="LN672">672</td><td class="line">	    fprintf(<span class='macro'>stderr<span class='expansion'>stderr</span></span>, <span class='string_literal'>"Requested port number %d is invalid\n"</span>, attr_port_num);</td></tr>
+<tr><td class="num" id="LN673">673</td><td class="line">	    <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN674">674</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN675">675</td><td class="line">	port_num = attr_port_num;</td></tr>
+<tr><td class="num" id="LN676">676</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN677">677</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN678">678</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet begin listen, requested port %d"</span>, attr_port_num);</td></tr>
+<tr><td class="num" id="LN679">679</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN680">680</td><td class="line">    address.host = <span class='macro'>ENET_HOST_ANY<span class='expansion'>0</span></span>;</td></tr>
+<tr><td class="num" id="LN681">681</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN682">682</td><td class="line">    <span class='keyword'>if</span> (enet_data-&gt;server != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN683">683</td><td class="line">	<span class='comment'>/* we're already listening */</span></td></tr>
+<tr><td class="num" id="LN684">684</td><td class="line">        <span class='keyword'>if</span> (port_num == 0) {</td></tr>
+<tr><td class="num" id="LN685">685</td><td class="line">	    <span class='comment'>/* not requesting a specific port, return what we have */</span></td></tr>
+<tr><td class="num" id="LN686">686</td><td class="line">	    <span class='keyword'>return</span> build_listen_attrs(cm, svc, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, listen_info, address.port);</td></tr>
+<tr><td class="num" id="LN687">687</td><td class="line">	} <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN688">688</td><td class="line">	    printf(<span class='string_literal'>"CMlisten_specific() requesting a specific port follows other Enet operation which initiated listen at another port.  Only one listen allowed, second listen fails.\n"</span>);</td></tr>
+<tr><td class="num" id="LN689">689</td><td class="line">	    <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN690">690</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN691">691</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN692">692</td><td class="line">    <span class='keyword'>if</span> (port_num != 0) {</td></tr>
+<tr><td class="num" id="LN693">693</td><td class="line">	<span class='comment'>/* Bind the server to the default localhost.     */</span></td></tr>
+<tr><td class="num" id="LN694">694</td><td class="line">	<span class='comment'>/* A specific host address can be specified by   */</span></td></tr>
+<tr><td class="num" id="LN695">695</td><td class="line">	<span class='comment'>/* enet_address_set_host (&amp; address, "x.x.x.x"); */</span></td></tr>
+<tr><td class="num" id="LN696">696</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN697">697</td><td class="line">	address.port = port_num;</td></tr>
+<tr><td class="num" id="LN698">698</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN699">699</td><td class="line">	svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet trying to bind selected port %d"</span>, port_num);</td></tr>
+<tr><td class="num" id="LN700">700</td><td class="line">	server = enet_host_create (&amp; address <span class='comment'>/* the address to bind the server host to */</span>, </td></tr>
+<tr><td class="num" id="LN701">701</td><td class="line">				   0      <span class='comment'>/* allow up to 4095 clients and/or outgoing connections */</span>,</td></tr>
+<tr><td class="num" id="LN702">702</td><td class="line">				   1      <span class='comment'>/* allow up to 2 channels to be used, 0 and 1 */</span>,</td></tr>
+<tr><td class="num" id="LN703">703</td><td class="line">				   0      <span class='comment'>/* assume any amount of incoming bandwidth */</span>,</td></tr>
+<tr><td class="num" id="LN704">704</td><td class="line">				   0      <span class='comment'>/* assume any amount of outgoing bandwidth */</span>);</td></tr>
+<tr><td class="num" id="LN705">705</td><td class="line">	<span class='keyword'>if</span> (server == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN706">706</td><td class="line">	    fprintf (<span class='macro'>stderr<span class='expansion'>stderr</span></span>, </td></tr>
+<tr><td class="num" id="LN707">707</td><td class="line">		     <span class='string_literal'>"An error occurred while trying to create an ENet server host.\n"</span>);</td></tr>
+<tr><td class="num" id="LN708">708</td><td class="line">	    <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN709">709</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN710">710</td><td class="line">	enet_data-&gt;server = server;</td></tr>
+<tr><td class="num" id="LN711">711</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN712">712</td><td class="line">	<span class='keyword'>long</span> seedval = time(<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) + getpid();</td></tr>
+<tr><td class="num" id="LN713">713</td><td class="line">	<span class='comment'>/* port num is free.  Constrain to range 26000 : 26100 */</span></td></tr>
+<tr><td class="num" id="LN714">714</td><td class="line">	<span class='keyword'>int</span> low_bound, high_bound;</td></tr>
+<tr><td class="num" id="LN715">715</td><td class="line">	<span class='keyword'>int</span> size;</td></tr>
+<tr><td class="num" id="LN716">716</td><td class="line">	<span class='keyword'>int</span> tries;</td></tr>
+<tr><td class="num" id="LN717">717</td><td class="line">	srand48(seedval);</td></tr>
+<tr><td class="num" id="LN718">718</td><td class="line">	get_IP_config(<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, 0, <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, &amp;low_bound, &amp;high_bound,</td></tr>
+<tr><td class="num" id="LN719">719</td><td class="line">		      <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, listen_info, svc-&gt;trace_out, (<span class='keyword'>void</span> *)cm);</td></tr>
+<tr><td class="num" id="LN720">720</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN721">721</td><td class="line">    restart:</td></tr>
+<tr><td class="num" id="LN722">722</td><td class="line">	size = high_bound - low_bound;</td></tr>
+<tr><td class="num" id="LN723">723</td><td class="line">	tries = 10;</td></tr>
+<tr><td class="num" id="LN724">724</td><td class="line">	<span class='keyword'>while</span> (tries &gt; 0) {</td></tr>
+<tr><td class="num" id="LN725">725</td><td class="line">	    <span class='keyword'>int</span> target = low_bound + size * drand48();</td></tr>
+<tr><td class="num" id="LN726">726</td><td class="line">	    address.port = target;</td></tr>
+<tr><td class="num" id="LN727">727</td><td class="line">	    svc-&gt;trace_out(cm, <span class='string_literal'>"CMEnet trying to bind port %d"</span>, target);</td></tr>
+<tr><td class="num" id="LN728">728</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN729">729</td><td class="line">	    server = enet_host_create (&amp; address <span class='comment'>/* the address to bind the server host to */</span>, </td></tr>
+<tr><td class="num" id="LN730">730</td><td class="line">				       0     <span class='comment'>/* 0 means dynamic alloc clients and/or outgoing connnections */</span>,</td></tr>
+<tr><td class="num" id="LN731">731</td><td class="line">				       1      <span class='comment'>/* allow up to 2 channels to be used, 0 and 1 */</span>,</td></tr>
+<tr><td class="num" id="LN732">732</td><td class="line">				       0      <span class='comment'>/* assume any amount of incoming bandwidth */</span>,</td></tr>
+<tr><td class="num" id="LN733">733</td><td class="line">				       0      <span class='comment'>/* assume any amount of outgoing bandwidth */</span>);</td></tr>
+<tr><td class="num" id="LN734">734</td><td class="line">	    tries--;</td></tr>
+<tr><td class="num" id="LN735">735</td><td class="line">	    <span class='keyword'>if</span> (server != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) tries = 0;</td></tr>
+<tr><td class="num" id="LN736">736</td><td class="line">	    <span class='keyword'>if</span> (tries == 5) {</td></tr>
+<tr><td class="num" id="LN737">737</td><td class="line">		<span class='comment'>/* try reseeding in case we're in sync with another process */</span></td></tr>
+<tr><td class="num" id="LN738">738</td><td class="line">		srand48(time(<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) + getpid());</td></tr>
+<tr><td class="num" id="LN739">739</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN740">740</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN741">741</td><td class="line">	<span class='keyword'>if</span> (server == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN742">742</td><td class="line">	    high_bound += 100;</td></tr>
+<tr><td class="num" id="LN743">743</td><td class="line">	    <span class='keyword'>goto</span> restart;</td></tr>
+<tr><td class="num" id="LN744">744</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN745">745</td><td class="line">	enet_data-&gt;server = server;</td></tr>
+<tr><td class="num" id="LN746">746</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN747">747</td><td class="line">    svc-&gt;fd_add_select(cm, enet_host_get_sock_fd (server), </td></tr>
+<tr><td class="num" id="LN748">748</td><td class="line">		       (select_list_func) enet_service_network, (<span class='keyword'>void</span>*)cm, (<span class='keyword'>void</span>*)trans);</td></tr>
+<tr><td class="num" id="LN749">749</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN750">750</td><td class="line">    svc-&gt;trace_out(enet_data-&gt;cm, <span class='string_literal'>"CMENET Adding read_wake_fd as action on fd %d"</span>,</td></tr>
+<tr><td class="num" id="LN751">751</td><td class="line">		   enet_data-&gt;wake_read_fd);</td></tr>
+<tr><td class="num" id="LN752">752</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN753">753</td><td class="line">    svc-&gt;fd_add_select(cm, enet_data-&gt;wake_read_fd, (select_list_func)read_wake_fd_and_service, </td></tr>
+<tr><td class="num" id="LN754">754</td><td class="line">                       (<span class='keyword'>void</span>*)cm, (<span class='keyword'>void</span>*)trans);</td></tr>
+<tr><td class="num" id="LN755">755</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN756">756</td><td class="line">    <span class='keyword'>return</span> build_listen_attrs(cm, svc, enet_data, listen_info, address.port);</td></tr>
+<tr><td class="num" id="LN757">757</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN758">758</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN759">759</td><td class="line"><span class='directive'>#if defined(HAVE_WINDOWS_H) &amp;&amp; !defined(NEED_IOVEC_DEFINE)</span></td></tr>
+<tr><td class="num" id="LN760">760</td><td class="line"><span class='directive'>#define NEED_IOVEC_DEFINE</span></td></tr>
+<tr><td class="num" id="LN761">761</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN762">762</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN763">763</td><td class="line"><span class='directive'>#ifdef NEED_IOVEC_DEFINE</span></td></tr>
+<tr><td class="num" id="LN764">764</td><td class="line"><span class='keyword'>struct</span> iovec {</td></tr>
+<tr><td class="num" id="LN765">765</td><td class="line">    <span class='keyword'>void</span> *iov_base;</td></tr>
+<tr><td class="num" id="LN766">766</td><td class="line">    <span class='keyword'>int</span> iov_len;</td></tr>
+<tr><td class="num" id="LN767">767</td><td class="line">};</td></tr>
+<tr><td class="num" id="LN768">768</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN769">769</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN770">770</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN771">771</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN772">772</td><td class="line">libcmenet_LTX_read_block_func(CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN773">773</td><td class="line">			      enet_conn_data_ptr conn_data, <span class='keyword'>int</span> *actual_len,</td></tr>
+<tr><td class="num" id="LN774">774</td><td class="line">			      <span class='keyword'>int</span> *offset_ptr)</td></tr>
+<tr><td class="num" id="LN775">775</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN776">776</td><td class="line">    CMbuffer cb;</td></tr>
+<tr><td class="num" id="LN777">777</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN778">778</td><td class="line">    <span class='keyword'>if</span> (conn_data-&gt;read_buffer_len == -1) <span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN779">779</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN780">780</td><td class="line">    *actual_len = conn_data-&gt;read_buffer_len;</td></tr>
+<tr><td class="num" id="LN781">781</td><td class="line">    *offset_ptr = 0;</td></tr>
+<tr><td class="num" id="LN782">782</td><td class="line">    cb = conn_data-&gt;read_buffer;</td></tr>
+<tr><td class="num" id="LN783">783</td><td class="line">    conn_data-&gt;read_buffer_len = 0;</td></tr>
+<tr><td class="num" id="LN784">784</td><td class="line">    conn_data-&gt;read_buffer = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN785">785</td><td class="line">    <span class='keyword'>return</span> cb;</td></tr>
+<tr><td class="num" id="LN786">786</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN787">787</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN788">788</td><td class="line"><span class='directive'>#ifdef CURRENT_UTC_TIME_NEEDED</span></td></tr>
+<tr><td class="num" id="LN789">789</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN790">790</td><td class="line"><span class='keyword'>void</span> current_utc_time(<span class='keyword'>struct</span> timespec *ts)</td></tr>
+<tr><td class="num" id="LN791">791</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN792">792</td><td class="line"><span class='directive'>#ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time</span></td></tr>
+<tr><td class="num" id="LN793">793</td><td class="line">    clock_serv_t cclock;</td></tr>
+<tr><td class="num" id="LN794">794</td><td class="line">    mach_timespec_t mts;</td></tr>
+<tr><td class="num" id="LN795">795</td><td class="line">    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &amp;cclock);</td></tr>
+<tr><td class="num" id="LN796">796</td><td class="line">    clock_get_time(cclock, &amp;mts);</td></tr>
+<tr><td class="num" id="LN797">797</td><td class="line">    mach_port_deallocate(mach_task_self(), cclock);</td></tr>
+<tr><td class="num" id="LN798">798</td><td class="line">    ts-&gt;tv_sec = mts.tv_sec;</td></tr>
+<tr><td class="num" id="LN799">799</td><td class="line">    ts-&gt;tv_nsec = mts.tv_nsec;</td></tr>
+<tr><td class="num" id="LN800">800</td><td class="line"><span class='directive'>#else</span></td></tr>
+<tr><td class="num" id="LN801">801</td><td class="line">    clock_gettime(<span class='macro'>CLOCK_REALTIME<span class='expansion'>0</span></span>, ts);</td></tr>
+<tr><td class="num" id="LN802">802</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN803">803</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN804">804</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN805">805</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN806">806</td><td class="line"><span class='directive'>#ifdef TIME_DIFF_USED</span></td></tr>
+<tr><td class="num" id="LN807">807</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>struct</span> timespec time_diff(<span class='keyword'>struct</span> timespec start, <span class='keyword'>struct</span> timespec end)</td></tr>
+<tr><td class="num" id="LN808">808</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN809">809</td><td class="line">    <span class='keyword'>struct</span> timespec temp;</td></tr>
+<tr><td class="num" id="LN810">810</td><td class="line">    <span class='keyword'>if</span> ((end.tv_nsec-start.tv_nsec)&lt;0) {</td></tr>
+<tr><td class="num" id="LN811">811</td><td class="line">	temp.tv_sec = end.tv_sec-start.tv_sec-1;</td></tr>
+<tr><td class="num" id="LN812">812</td><td class="line">	temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;</td></tr>
+<tr><td class="num" id="LN813">813</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN814">814</td><td class="line">	temp.tv_sec = end.tv_sec-start.tv_sec;</td></tr>
+<tr><td class="num" id="LN815">815</td><td class="line">	temp.tv_nsec = end.tv_nsec-start.tv_nsec;</td></tr>
+<tr><td class="num" id="LN816">816</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN817">817</td><td class="line">    <span class='keyword'>return</span> temp;</td></tr>
+<tr><td class="num" id="LN818">818</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN819">819</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN820">820</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN821">821</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN822">822</td><td class="line">libcmenet_LTX_writev_func(CMtrans_services svc, enet_conn_data_ptr ecd,</td></tr>
+<tr><td class="num" id="LN823">823</td><td class="line">			  <span class='keyword'>struct</span> iovec *iov, <span class='keyword'>int</span> iovcnt, attr_list attrs)</td></tr>
+<tr><td class="num" id="LN824">824</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN825">825</td><td class="line">    <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN826">826</td><td class="line">    <span class='keyword'>int</span> length = 0;</td></tr>
+<tr><td class="num" id="LN827">827</td><td class="line">    <span class='keyword'>static</span> time_t last_flush_call = 0;</td></tr>
+<tr><td class="num" id="LN828">828</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN829">829</td><td class="line">    (<span class='keyword'>void</span>) attrs;</td></tr>
+<tr><td class="num" id="LN830">830</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; iovcnt; i++) {</td></tr>
+<tr><td class="num" id="LN831">831</td><td class="line">	length += iov[i].iov_len;</td></tr>
+<tr><td class="num" id="LN832">832</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN833">833</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN834">834</td><td class="line">    svc-&gt;trace_out(ecd-&gt;sd-&gt;cm, <span class='string_literal'>"CMENET vector write of %d bytes on peer %p"</span>,</td></tr>
+<tr><td class="num" id="LN835">835</td><td class="line">		   length, ecd-&gt;peer);</td></tr>
+<tr><td class="num" id="LN836">836</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN837">837</td><td class="line">   <span class='comment'>/* Create a reliable packet of the right size */</span></td></tr>
+<tr><td class="num" id="LN838">838</td><td class="line">    ENetPacket * packet = enet_packet_create (<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, length, </td></tr>
+<tr><td class="num" id="LN839">839</td><td class="line">					      ENET_PACKET_FLAG_RELIABLE);</td></tr>
+<tr><td class="num" id="LN840">840</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN841">841</td><td class="line">    length = 0;</td></tr>
+<tr><td class="num" id="LN842">842</td><td class="line">    <span class='comment'>/* copy in the data */</span></td></tr>
+<tr><td class="num" id="LN843">843</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; iovcnt; i++) {</td></tr>
+<tr><td class="num" id="LN844">844</td><td class="line">	memcpy(packet-&gt;data + length, iov[i].iov_base, iov[i].iov_len);</td></tr>
+<tr><td class="num" id="LN845">845</td><td class="line">	length += iov[i].iov_len;</td></tr>
+<tr><td class="num" id="LN846">846</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN847">847</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN848">848</td><td class="line">    <span class='comment'>/* Send the packet to the peer over channel id 0. */</span></td></tr>
+<tr><td class="num" id="LN849">849</td><td class="line">    <span class='keyword'>if</span> (enet_peer_send (ecd-&gt;peer, 0, packet) == -1) {</td></tr>
+<tr><td class="num" id="LN850">850</td><td class="line">        enet_packet_destroy(packet);</td></tr>
+<tr><td class="num" id="LN851">851</td><td class="line">        svc-&gt;trace_out(ecd-&gt;sd-&gt;cm, <span class='string_literal'>"ENET  ======  failed to send a packet to peer %p, state %d\n"</span>, ecd-&gt;peer, ecd-&gt;peer-&gt;state);</td></tr>
+<tr><td class="num" id="LN852">852</td><td class="line">	<span class='keyword'>return</span> -1;</td></tr>
+<tr><td class="num" id="LN853">853</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN854">854</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN855">855</td><td class="line">    wake_enet_server_thread(ecd-&gt;sd);</td></tr>
+<tr><td class="num" id="LN856">856</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN857">857</td><td class="line">    <span class='keyword'>if</span> (last_flush_call == 0) {</td></tr>
+<tr><td class="num" id="LN858">858</td><td class="line">	enet_host_flush(ecd-&gt;sd-&gt;server);</td></tr>
+<tr><td class="num" id="LN859">859</td><td class="line">	last_flush_call = time(<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>);</td></tr>
+<tr><td class="num" id="LN860">860</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN861">861</td><td class="line">	time_t now = time(<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>);</td></tr>
+<tr><td class="num" id="LN862">862</td><td class="line">	<span class='keyword'>if</span> (now &gt; last_flush_call) {</td></tr>
+<tr><td class="num" id="LN863">863</td><td class="line">	    last_flush_call = now;</td></tr>
+<tr><td class="num" id="LN864">864</td><td class="line">	    enet_host_flush(ecd-&gt;sd-&gt;server);</td></tr>
+<tr><td class="num" id="LN865">865</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN866">866</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN867">867</td><td class="line">    <span class='keyword'>return</span> iovcnt;</td></tr>
+<tr><td class="num" id="LN868">868</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN869">869</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN870">870</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN871">871</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span> enet_global_init = 0;</td></tr>
+<tr><td class="num" id="LN872">872</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN873">873</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN874">874</td><td class="line">free_enet_data(CManager cm, <span class='keyword'>void</span> *sdv)</td></tr>
+<tr><td class="num" id="LN875">875</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN876">876</td><td class="line">    enet_client_data_ptr sd = (enet_client_data_ptr) sdv;</td></tr>
+<tr><td class="num" id="LN877">877</td><td class="line">    CMtrans_services svc = sd-&gt;svc;</td></tr>
+<tr><td class="num" id="LN878">878</td><td class="line">    (<span class='keyword'>void</span>)cm;</td></tr>
+<tr><td class="num" id="LN879">879</td><td class="line">    <span class='keyword'>if</span> (sd-&gt;hostname != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN880">880</td><td class="line">	svc-&gt;free_func(sd-&gt;hostname);</td></tr>
+<tr><td class="num" id="LN881">881</td><td class="line">    svc-&gt;free_func(sd);</td></tr>
+<tr><td class="num" id="LN882">882</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN883">883</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN884">884</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN885">885</td><td class="line">shutdown_enet_thread</td></tr>
+<tr><td class="num" id="LN886">886</td><td class="line">(CManager cm, <span class='keyword'>void</span> *sdv)</td></tr>
+<tr><td class="num" id="LN887">887</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN888">888</td><td class="line">    enet_client_data_ptr sd = (enet_client_data_ptr) sdv;</td></tr>
+<tr><td class="num" id="LN889">889</td><td class="line">    CMtrans_services svc = sd-&gt;svc;</td></tr>
+<tr><td class="num" id="LN890">890</td><td class="line">    (<span class='keyword'>void</span>)cm;</td></tr>
+<tr><td class="num" id="LN891">891</td><td class="line">    <span class='keyword'>if</span> (sd-&gt;server != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN892">892</td><td class="line">	ENetHost * server = sd-&gt;server;</td></tr>
+<tr><td class="num" id="LN893">893</td><td class="line">	enet_host_flush(sd-&gt;server);</td></tr>
+<tr><td class="num" id="LN894">894</td><td class="line">	svc-&gt;fd_remove_select(cm, enet_host_get_sock_fd (server));</td></tr>
+<tr><td class="num" id="LN895">895</td><td class="line">	sd-&gt;server = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN896">896</td><td class="line">	enet_host_destroy(server);</td></tr>
+<tr><td class="num" id="LN897">897</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN898">898</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN899">899</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN900">900</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN901">901</td><td class="line">libcmenet_LTX_initialize(CManager cm, CMtrans_services svc,</td></tr>
+<tr><td class="num" id="LN902">902</td><td class="line">			 transport_entry trans, attr_list attrs)</td></tr>
+<tr><td class="num" id="LN903">903</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN904">904</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> atom_init = 0;</td></tr>
+<tr><td class="num" id="LN905">905</td><td class="line">    <span class='keyword'>int</span> filedes[2];</td></tr>
+<tr><td class="num" id="LN906">906</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN907">907</td><td class="line">    enet_client_data_ptr enet_data;</td></tr>
+<tr><td class="num" id="LN908">908</td><td class="line">    (<span class='keyword'>void</span>)attrs;</td></tr>
+<tr><td class="num" id="LN909">909</td><td class="line">    svc-&gt;trace_out(cm, <span class='string_literal'>"Initialize ENET reliable UDP transport built in %s"</span>,</td></tr>
+<tr><td class="num" id="LN910">910</td><td class="line">		   <span class='macro'>EVPATH_LIBRARY_BUILD_DIR<span class='expansion'>"/home/chuck/Code/sst/EVPath/build"</span></span>);</td></tr>
+<tr><td class="num" id="LN911">911</td><td class="line">    <span class='keyword'>if</span> (enet_global_init == 0) {</td></tr>
+<tr><td class="num" id="LN912">912</td><td class="line">	<span class='keyword'>if</span> (enet_initialize () != 0) {</td></tr>
+<tr><td class="num" id="LN913">913</td><td class="line">	    fprintf (<span class='macro'>stderr<span class='expansion'>stderr</span></span>, <span class='string_literal'>"An error occurred while initializing ENet.\n"</span>);</td></tr>
+<tr><td class="num" id="LN914">914</td><td class="line">	    <span class='comment'>//return EXIT_FAILURE;</span></td></tr>
+<tr><td class="num" id="LN915">915</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN916">916</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN917">917</td><td class="line">    <span class='keyword'>if</span> (atom_init == 0) {</td></tr>
+<tr><td class="num" id="LN918">918</td><td class="line">	CM_ENET_HOSTNAME = attr_atom_from_string(<span class='string_literal'>"CM_ENET_HOST"</span>);</td></tr>
+<tr><td class="num" id="LN919">919</td><td class="line">	CM_ENET_PORT = attr_atom_from_string(<span class='string_literal'>"CM_ENET_PORT"</span>);</td></tr>
+<tr><td class="num" id="LN920">920</td><td class="line">	CM_ENET_ADDR = attr_atom_from_string(<span class='string_literal'>"CM_ENET_ADDR"</span>);</td></tr>
+<tr><td class="num" id="LN921">921</td><td class="line">	CM_TRANSPORT = attr_atom_from_string(<span class='string_literal'>"CM_TRANSPORT"</span>);</td></tr>
+<tr><td class="num" id="LN922">922</td><td class="line">	CM_PEER_IP = attr_atom_from_string(<span class='string_literal'>"PEER_IP"</span>);</td></tr>
+<tr><td class="num" id="LN923">923</td><td class="line">	CM_PEER_LISTEN_PORT = attr_atom_from_string(<span class='string_literal'>"PEER_LISTEN_PORT"</span>);</td></tr>
+<tr><td class="num" id="LN924">924</td><td class="line">	CM_NETWORK_POSTFIX = attr_atom_from_string(<span class='string_literal'>"CM_NETWORK_POSTFIX"</span>);</td></tr>
+<tr><td class="num" id="LN925">925</td><td class="line">	CM_ENET_CONN_TIMEOUT = attr_atom_from_string(<span class='string_literal'>"CM_ENET_CONN_TIMEOUT"</span>);</td></tr>
+<tr><td class="num" id="LN926">926</td><td class="line">	atom_init++;</td></tr>
+<tr><td class="num" id="LN927">927</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN928">928</td><td class="line">    enet_data = svc-&gt;malloc_func(<span class='keyword'>sizeof</span>(<span class='keyword'>struct</span> enet_client_data));</td></tr>
+<tr><td class="num" id="LN929">929</td><td class="line">    enet_data-&gt;cm = cm;</td></tr>
+<tr><td class="num" id="LN930">930</td><td class="line">    enet_data-&gt;hostname = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN931">931</td><td class="line">    enet_data-&gt;listen_port = -1;</td></tr>
+<tr><td class="num" id="LN932">932</td><td class="line">    enet_data-&gt;svc = svc;</td></tr>
+<tr><td class="num" id="LN933">933</td><td class="line">    enet_data-&gt;server = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN934">934</td><td class="line">    enet_data-&gt;pending_data = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN935">935</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN936">936</td><td class="line">    <span class='keyword'>if</span> (pipe(filedes) != 0) {</td></tr>
+<tr><td class="num" id="LN937">937</td><td class="line">	perror(<span class='string_literal'>"Pipe for wake not created.  ENET wake mechanism inoperative."</span>);</td></tr>
+<tr><td class="num" id="LN938">938</td><td class="line">	<span class='keyword'>return</span> <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN939">939</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN940">940</td><td class="line">    enet_data-&gt;wake_read_fd = filedes[0];</td></tr>
+<tr><td class="num" id="LN941">941</td><td class="line">    enet_data-&gt;wake_write_fd = filedes[1];</td></tr>
+<tr><td class="num" id="LN942">942</td><td class="line">    svc-&gt;add_shutdown_task(cm, shutdown_enet_thread, (<span class='keyword'>void</span> *) enet_data, <span class='macro'>SHUTDOWN_TASK<span class='expansion'>1</span></span>);</td></tr>
+<tr><td class="num" id="LN943">943</td><td class="line">    svc-&gt;add_shutdown_task(cm, free_enet_data, (<span class='keyword'>void</span> *) enet_data, <span class='macro'>FREE_TASK<span class='expansion'>2</span></span>);</td></tr>
+<tr><td class="num" id="LN944">944</td><td class="line">    <span class='keyword'>return</span> (<span class='keyword'>void</span> *) enet_data;</td></tr>
+<tr><td class="num" id="LN945">945</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN946">946</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN947">947</td><td class="line"><span class='keyword'>extern</span> transport_entry</td></tr>
+<tr><td class="num" id="LN948">948</td><td class="line">cmenet_add_static_transport(CManager cm, CMtrans_services svc)</td></tr>
+<tr><td class="num" id="LN949">949</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN950">950</td><td class="line">    transport_entry transport;</td></tr>
+<tr><td class="num" id="LN951">951</td><td class="line">    transport = svc-&gt;malloc_func(<span class='keyword'>sizeof</span>(<span class='keyword'>struct</span> _transport_item));</td></tr>
+<tr><td class="num" id="LN952">952</td><td class="line">    memset(transport, 0, <span class='keyword'>sizeof</span>(*transport));</td></tr>
+<tr><td class="num" id="LN953">953</td><td class="line">    transport-&gt;trans_name = strdup(<span class='string_literal'>"enet"</span>);</td></tr>
+<tr><td class="num" id="LN954">954</td><td class="line">    transport-&gt;cm = cm;</td></tr>
+<tr><td class="num" id="LN955">955</td><td class="line">    transport-&gt;transport_init = (CMTransport_func)libcmenet_LTX_initialize;</td></tr>
+<tr><td class="num" id="LN956">956</td><td class="line">    transport-&gt;listen = (CMTransport_listen_func)libcmenet_LTX_non_blocking_listen;</td></tr>
+<tr><td class="num" id="LN957">957</td><td class="line">    transport-&gt;initiate_conn = (CMConnection(*)())libcmenet_LTX_initiate_conn;</td></tr>
+<tr><td class="num" id="LN958">958</td><td class="line">    transport-&gt;self_check = (<span class='keyword'>int</span>(*)())libcmenet_LTX_self_check;</td></tr>
+<tr><td class="num" id="LN959">959</td><td class="line">    transport-&gt;connection_eq = (<span class='keyword'>int</span>(*)())libcmenet_LTX_connection_eq;</td></tr>
+<tr><td class="num" id="LN960">960</td><td class="line">    transport-&gt;shutdown_conn = (CMTransport_shutdown_conn_func)libcmenet_LTX_shutdown_conn;</td></tr>
+<tr><td class="num" id="LN961">961</td><td class="line">    transport-&gt;read_block_func = (CMTransport_read_block_func)libcmenet_LTX_read_block_func;</td></tr>
+<tr><td class="num" id="LN962">962</td><td class="line">    transport-&gt;read_to_buffer_func = (CMTransport_read_to_buffer_func)<span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN963">963</td><td class="line">    transport-&gt;writev_func = (CMTransport_writev_func)libcmenet_LTX_writev_func;</td></tr>
+<tr><td class="num" id="LN964">964</td><td class="line">    transport-&gt;get_transport_characteristics = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN965">965</td><td class="line">    <span class='keyword'>if</span> (transport-&gt;transport_init) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path1" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">1</div></td><td>Taking true branch</td><td><div class="PathNav"><a href="#EndPath" title="Next event (2)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN966">966</td><td class="line">	transport-&gt;trans_data = <span class="mrange">transport-&gt;transport_init(cm, svc, transport)</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:33ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">2</div></td><td><div class="PathNav"><a href="#Path1" title="Previous event (1)">&#x2190;</a></div></td></td><td>Function taking 4 arguments is called with fewer (3)</td></tr></table></div></td></tr>
+<tr><td class="num" id="LN967">967</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN968">968</td><td class="line">    <span class='keyword'>return</span> transport;</td></tr>
+<tr><td class="num" id="LN969">969</td><td class="line">}</td></tr>
+</table></body></html>
