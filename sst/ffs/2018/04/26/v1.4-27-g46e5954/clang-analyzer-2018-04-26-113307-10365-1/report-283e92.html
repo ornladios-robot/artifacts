@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>
+<title>/home/chuck/Code/sst/ffs/source/cod/tests/data_funcs.c</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000;   border-radius:5px;  box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .msgNote { background-color:#ddeeff; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndex { border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align: right;
+   vertical-align: top;
+   font-weight: bold;
+   color:#444444;
+   padding-right:2ex;
+ }
+</style>
+</head>
+<body>
+<!-- BUGDESC Undefined or garbage value returned to caller -->
+
+<!-- BUGTYPE Garbage return value -->
+
+<!-- BUGCATEGORY Logic error -->
+
+<!-- BUGFILE /home/chuck/Code/sst/ffs/source/cod/tests/data_funcs.c -->
+
+<!-- FILENAME data_funcs.c -->
+
+<!-- FUNCTIONNAME read_buffer -->
+
+<!-- ISSUEHASHCONTENTOFLINEINCONTEXT ec51eae26cc07809f2853d771d0816f8 -->
+
+<!-- BUGLINE 129 -->
+
+<!-- BUGCOLUMN 5 -->
+
+<!-- BUGPATHLENGTH 12 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>source/cod/tests/data_funcs.c</td></tr>
+<tr><td class="rowname">Warning:</td><td><a href="#EndPath">line 129, column 5</a><br />Undefined or garbage value returned to caller</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='directive'>#include "config.h"</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='directive'>#include "fm.h"</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='directive'>#include "assert.h"</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='directive'>#include &lt;stdio.h&gt;</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='directive'>#include &lt;string.h&gt;</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='directive'>#include &lt;stdlib.h&gt;</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='directive'>#include &lt;fcntl.h&gt;</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='directive'>#include &lt;unistd.h&gt;</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='directive'>#define <span class='macro'>MAGIC<span class='expansion'>0x4356ffaa</span></span> 0x4356ffaa	/* random magic */</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line">write_buffer(<span class='keyword'>char</span> *filename, FMStructDescList desc, <span class='keyword'>void</span> *data, </td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line">             <span class='keyword'>int</span> test_num)</td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='comment'>/*     static FMContext c = NULL; */</span></td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"><span class='comment'>/*     FMFormat ioformat = NULL; */</span></td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='comment'>/*     char *enc_buf; */</span></td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line"><span class='comment'>/*     int buf_len; */</span></td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"><span class='comment'>/*     char *server_id; */</span></td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='comment'>/*     int id_len; */</span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line"><span class='comment'>/*     char *server_rep; */</span></td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line"><span class='comment'>/*     int rep_len; */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line"><span class='comment'>/*     int i = 0; */</span></td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line"><span class='comment'>/*     int magic = MAGIC; */</span></td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line"><span class='comment'>/*     int tmp = test_num; */</span></td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"><span class='comment'>/*     static int f = 0; */</span></td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line"><span class='comment'>/*     if (f == 0) { */</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line"><span class='comment'>/* 	f = open(filename, O_WRONLY|O_CREAT, 0777); */</span></td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line"><span class='comment'>/*         write(f, &amp;magic, 4); */</span></td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"><span class='comment'>/*     } */</span></td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line"><span class='comment'>/*     write(f, &amp;tmp, 4); */</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line"><span class='comment'>/*     if (c == NULL) { */</span></td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line"><span class='comment'>/* 	c = create_local_IOcontext(); */</span></td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"><span class='comment'>/*     } */</span></td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line"><span class='comment'>/*     ioformat = register_data_format(c, desc); */</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line"><span class='comment'>/*     server_id = get_server_ID_FMformat(ioformat, &amp;id_len); */</span></td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line"><span class='comment'>/*     server_rep = get_server_rep_FMformat(ioformat, &amp;rep_len); */</span></td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"><span class='comment'>/*     write(f, &amp;id_len, 4); */</span></td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line"><span class='comment'>/*     write(f, &amp;server_id[0], id_len); */</span></td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line"><span class='comment'>/*     write(f, &amp;rep_len, 4); */</span></td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"><span class='comment'>/*     write(f, &amp;server_rep[0], rep_len); */</span></td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line"><span class='comment'>/*     top_ioformat = ioformat; */</span></td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"><span class='comment'>/*     enc_buf = encode_IOcontext_buffer(c, top_ioformat, data, &amp;buf_len); */</span></td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line"><span class='comment'>/*     write(f, &amp;buf_len, 4); */</span></td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line"><span class='comment'>/*     write(f, &amp;enc_buf[0], buf_len); */</span></td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line">byte_swap(data, size)</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"><span class='keyword'>char</span> *data;</td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line"><span class='keyword'>int</span> size;</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">    <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">    <span class='macro'>assert((size % 2) == 0)<span class='expansion'>((void) sizeof (((size % 2) == 0) ? 1 : 0), __extension__ ({ if<br> ((size % 2) == 0) ; else __assert_fail ("(size % 2) == 0", "/home/chuck/Code/sst/ffs/source/cod/tests/data_funcs.c"<br>, 56, __extension__ __PRETTY_FUNCTION__); }))</span></span>;</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; size / 2; i++) {</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">	<span class='keyword'>char</span> tmp = data[i];</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">	data[i] = data[size - i - 1];</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">	data[size - i - 1] = tmp;</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line"><span class='keyword'>static</span></td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line"><span class='keyword'>int</span> read_data_block(<span class='keyword'>int</span> f, FMContext c, <span class='keyword'>int</span> swap, <span class='keyword'>char</span> **buf_p)</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line"><span class='comment'>/*     int test_num = 0; */</span></td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line"><span class='comment'>/*     int format_count = 0; */</span></td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"><span class='comment'>/*     int len = 0; */</span></td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line"><span class='comment'>/*     int i = 0; */</span></td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line"><span class='comment'>/*     if (read(f, &amp;test_num, 4) != 4) return -1; */</span></td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line"><span class='comment'>/*     if (swap) byte_swap(&amp;test_num, 4); */</span></td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line"><span class='comment'>/*     if (read(f, &amp;format_count, 4) != 4) return -1; */</span></td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line"><span class='comment'>/*     if (swap) byte_swap(&amp;format_count, 4); */</span></td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line"><span class='comment'>/*     for (i=0; i &lt; format_count; i++) { */</span></td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line"><span class='comment'>/* 	int id_len; */</span></td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line"><span class='comment'>/* 	IOFormat ioformat; */</span></td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line"><span class='comment'>/* 	char *id; */</span></td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line"><span class='comment'>/* 	char *body; */</span></td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line"><span class='comment'>/* 	read(f, &amp;id_len, 4); */</span></td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line"><span class='comment'>/* 	if (swap) byte_swap(&amp;id_len, 4); */</span></td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line"><span class='comment'>/* 	id = malloc(id_len); */</span></td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line"><span class='comment'>/* 	read(f, &amp;id[0], id_len); */</span></td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line"><span class='comment'>/* 	read(f, &amp;len, 4); */</span></td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line"><span class='comment'>/* 	if (swap) byte_swap(&amp;len, 4); */</span></td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line"><span class='comment'>/* 	body = malloc(len); */</span></td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line"><span class='comment'>/* 	read(f, &amp;body[0], len); */</span></td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line"><span class='comment'>/* 	ioformat = load_external_format_IOcontext(c, id, id_len, body); */</span></td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line"><span class='comment'>/*     } */</span></td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line"><span class='comment'>/*     read(f, &amp;len, 4); */</span></td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line"><span class='comment'>/*     if (swap) byte_swap(&amp;len, 4); */</span></td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line"><span class='comment'>/*     *buf_p = malloc(len); */</span></td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line"><span class='comment'>/*     read(f, *buf_p, len); */</span></td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line"><span class='comment'>/*     return test_num; */</span></td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">  <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line"><span class='keyword'>extern</span></td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line"><span class='keyword'>char</span> *read_buffer(FMContext c, <span class='keyword'>char</span> *read_file, <span class='keyword'>int</span> test_num)</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> f = 0;</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> swap = 0;</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">    <span class='keyword'>static</span> <span class='keyword'>int</span> data_test_num = -1;</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">    <span class="mrange"><span class='keyword'>char</span> *buf</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path1" class="msg msgEvent" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">1</div></td><td>'buf' declared without an initial value</td><td><div class="PathNav"><a href="#Path2" title="Next event (2)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">    <span class='keyword'>if</span> (f == 0) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path2" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">2</div></td><td><div class="PathNav"><a href="#Path1" title="Previous event (1)">&#x2190;</a></div></td></td><td>Taking true branch</td><td><div class="PathNav"><a href="#Path3" title="Next event (3)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">	<span class='keyword'>int</span> in_magic;</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">	f = open(read_file, <span class='macro'>O_RDONLY<span class='expansion'>00</span></span>, 0777);</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">	<span class='keyword'>if</span>(<span class="mrange">read(f, &amp;in_magic, 4) != 4</span>) exit(1);</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path3" class="msg msgEvent" style="margin-left:12ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">3</div></td><td><div class="PathNav"><a href="#Path2" title="Previous event (2)">&#x2190;</a></div></td></td><td>Assuming the condition is false</td><td><div class="PathNav"><a href="#Path4" title="Next event (4)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path4" class="msg msgControl" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">4</div></td><td><div class="PathNav"><a href="#Path3" title="Previous event (3)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#Path5" title="Next event (5)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">	<span class='keyword'>if</span> (<span class="mrange">in_magic != <span class='macro'>MAGIC<span class='expansion'>0x4356ffaa</span></span></span>) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path5" class="msg msgEvent" style="margin-left:13ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">5</div></td><td><div class="PathNav"><a href="#Path4" title="Previous event (4)">&#x2190;</a></div></td></td><td>Assuming 'in_magic' is equal to MAGIC</td><td><div class="PathNav"><a href="#Path6" title="Next event (6)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path6" class="msg msgControl" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">6</div></td><td><div class="PathNav"><a href="#Path5" title="Previous event (5)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#Path7" title="Next event (7)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">	    byte_swap((<span class='keyword'>char</span>*)&amp;in_magic, 4);</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">	    swap++;</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">	<span class='keyword'>if</span> (in_magic != <span class='macro'>MAGIC<span class='expansion'>0x4356ffaa</span></span>) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path7" class="msg msgControl" style="margin-left:9ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">7</div></td><td><div class="PathNav"><a href="#Path6" title="Previous event (6)">&#x2190;</a></div></td></td><td>Taking false branch</td><td><div class="PathNav"><a href="#Path8" title="Next event (8)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">	    printf(<span class='string_literal'>"Bad magic number in file, %x\n"</span>, in_magic);</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">	    exit(1);</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">    data_test_num = <span class="mrange"><span class="mrange">read_data_block(f, c, swap, &amp;buf)</span></span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path8" class="msg msgEvent" style="margin-left:21ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">8</div></td><td><div class="PathNav"><a href="#Path7" title="Previous event (7)">&#x2190;</a></div></td></td><td>Calling 'read_data_block'</td><td><div class="PathNav"><a href="#Path9" title="Next event (9)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path9" class="msg msgEvent" style="margin-left:21ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">9</div></td><td><div class="PathNav"><a href="#Path8" title="Previous event (8)">&#x2190;</a></div></td></td><td>Returning from 'read_data_block'</td><td><div class="PathNav"><a href="#Path10" title="Next event (10)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">    <span class='keyword'>while</span> (<span class="mrange">data_test_num != test_num</span>) {</td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path10" class="msg msgEvent" style="margin-left:12ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">10</div></td><td><div class="PathNav"><a href="#Path9" title="Previous event (9)">&#x2190;</a></div></td></td><td>Assuming 'data_test_num' is equal to 'test_num'</td><td><div class="PathNav"><a href="#Path11" title="Next event (11)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num"></td><td class="line"><div id="Path11" class="msg msgControl" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexControl">11</div></td><td><div class="PathNav"><a href="#Path10" title="Previous event (10)">&#x2190;</a></div></td></td><td>Loop condition is false. Execution continues on line 129</td><td><div class="PathNav"><a href="#EndPath" title="Next event (12)">&#x2192;</a></div></td></tr></table></div></td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">	<span class='keyword'>if</span> (data_test_num == -1) {</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">	    printf(<span class='string_literal'>"Data for test %d not in file\n"</span>, test_num);</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">	    exit(1);</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">	data_test_num = read_data_block(f, c, swap, &amp;buf);</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">	<span class='keyword'>if</span> (data_test_num == -1 ) {</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">	    printf(<span class='string_literal'>"End of file error\n"</span>);</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">    <span class='keyword'>return</span> <span class="mrange">buf</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:5ex"><table class="msgT"><tr><td valign="top"><div class="PathIndex PathIndexEvent">12</div></td><td><div class="PathNav"><a href="#Path11" title="Previous event (11)">&#x2190;</a></div></td></td><td>Undefined or garbage value returned to caller</td></tr></table></div></td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line">}</td></tr>
+</table></body></html>

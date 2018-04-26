@@ -1,0 +1,703 @@
+<!doctype html>
+<html>
+<head>
+<title>/home/chuck/Code/sst/ffs/source/ffs/evol.c</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000;   border-radius:5px;  box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .msgNote { background-color:#ddeeff; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndex { border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align: right;
+   vertical-align: top;
+   font-weight: bold;
+   color:#444444;
+   padding-right:2ex;
+ }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'limit' is never read -->
+
+<!-- BUGTYPE Dead assignment -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /home/chuck/Code/sst/ffs/source/ffs/evol.c -->
+
+<!-- FILENAME evol.c -->
+
+<!-- FUNCTIONNAME FMformat_cmp_diff -->
+
+<!-- ISSUEHASHCONTENTOFLINEINCONTEXT cdf39df4f339ef06f523238c8992924a -->
+
+<!-- BUGLINE 174 -->
+
+<!-- BUGCOLUMN 2 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>source/ffs/evol.c</td></tr>
+<tr><td class="rowname">Warning:</td><td><a href="#EndPath">line 174, column 2</a><br />Value stored to 'limit' is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='directive'>#include "config.h"</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='directive'>#include &lt;stdio.h&gt;</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='directive'>#include &lt;string.h&gt;</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='directive'>#include &lt;assert.h&gt;</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"><span class='directive'>#ifdef HAVE_UNISTD_H</span></td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='directive'>#include &lt;unistd.h&gt;</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='directive'>#include &lt;stdlib.h&gt;</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"><span class='directive'>#include &lt;ffs.h&gt;</span></td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='directive'>#include "fm_internal.h"</span></td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line"><span class='directive'>#include "ffs_internal.h"</span></td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line"><span class='directive'>#define <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span>	0xFFFF</span></td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"><span class='directive'>#define <span class='macro'>COMPAT_THRESH<span class='expansion'>0.8</span></span>	0.8</span></td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line"><span class='keyword'>static</span> FMStructDescList</td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line">build_struct_list(FMFormat format)</td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line">    FMStructDescList ret;</td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line">    <span class='keyword'>int</span> count = 0;</td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line">    <span class='keyword'>while</span> (format-&gt;subformats[count] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) count++;</td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line">    count+=2;</td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line">    ret = malloc(count * <span class='keyword'>sizeof</span>(ret[0]));</td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line">    ret[0].format_name = format-&gt;format_name;</td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line">    ret[0].field_list = format-&gt;field_list;</td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line">    ret[0].struct_size = format-&gt;record_length;</td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line">    ret[0].opt_info = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line">    count = 0;</td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line">    <span class='keyword'>while</span>(format-&gt;subformats[count] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line">	FMFormat subformat = format-&gt;subformats[count];</td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line">	ret[count+1].format_name = subformat-&gt;format_name;</td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line">	ret[count+1].field_list = subformat-&gt;field_list;</td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line">	ret[count+1].struct_size = subformat-&gt;record_length;</td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line">	ret[count+1].opt_info = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line">	count++;</td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line">    ret[count+1].format_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line">    ret[count+1].field_list = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line">    ret[count+1].struct_size = 0;</td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line">    ret[count+1].opt_info = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line">    <span class='keyword'>return</span> ret;</td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line">FMformat_compat_cmp(FMFormat format, FMFormat *formatList,</td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line">		    <span class='keyword'>int</span> listSize, FMcompat_formats * older_format);</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>void</span></td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line">FFS_determine_conversion(FFSContext c, FFSTypeHandle format)</td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line">    <span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line">    FMStructDescList struct_list;</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">    <span class='keyword'>int</span> nearest_format = -1, j;</td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">    FMcompat_formats older_format = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">    FMFormat *formatList;</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">    formatList =</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">	(FMFormat *) malloc(c-&gt;handle_list_size * <span class='keyword'>sizeof</span>(FMFormat));</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">    j = 0;</td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; c-&gt;handle_list_size; i++) {</td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">	<span class='keyword'>if</span> (c-&gt;handle_list[i] &amp;&amp; c-&gt;handle_list[i]-&gt;is_fixed_target)</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line">	    formatList[j++] = c-&gt;handle_list[i]-&gt;body;</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">    nearest_format = FMformat_compat_cmp(format-&gt;body, formatList,</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line">					 j, &amp;older_format);</td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line">    <span class='keyword'>if</span> (nearest_format == -1) {</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">	free(formatList);</td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line">	format-&gt;status = none_available;</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">	<span class='keyword'>return</span>;</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line">    struct_list = build_struct_list(formatList[nearest_format]);</td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">    establish_conversion(c, format, struct_list);</td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">    format-&gt;conversion_target = FFSTypeHandle_by_index(c, formatList[nearest_format]-&gt;format_index);</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">    format-&gt;status = conversion_set;</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line">    free(formatList);</td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">    free(struct_list);</td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">    <span class='keyword'>return</span>;</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">IO_field_type_eq(str1, str2)</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line"><span class='keyword'>const</span> <span class='keyword'>char</span> *str1;</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line"><span class='keyword'>const</span> <span class='keyword'>char</span> *str2;</td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">    FMdata_type t1, t2;</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line">    <span class='keyword'>long</span> t1_count, t2_count;</td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">    t1 = FMarray_str_to_data_type(str1, &amp;t1_count);</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">    t2 = FMarray_str_to_data_type(str2, &amp;t2_count);</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">    <span class='keyword'>if</span> ((t1_count == -1) &amp;&amp; (t2_count == -1)) {</td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">	<span class='comment'>/* variant array */</span></td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">	<span class='keyword'>char</span> *tmp_str1 = base_data_type(str1);</td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">	<span class='keyword'>char</span> *tmp_str2 = base_data_type(str2);</td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">	</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">	<span class='keyword'>char</span> *colon1 = strchr(tmp_str1, ':');</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line">	<span class='keyword'>char</span> *colon2 = strchr(tmp_str2, ':');</td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line">	<span class='keyword'>char</span> *lparen1 = strchr(str1, '[');</td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">	<span class='keyword'>char</span> *lparen2 = strchr(str2, '[');</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">	<span class='keyword'>int</span> count1 = 0;</td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">	<span class='keyword'>int</span> count2 = 0;</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">	<span class='keyword'>if</span> (colon1 != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">	    count1 = colon1 - tmp_str1;</td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line">	} <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">	    count1 = strlen(tmp_str1);</td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">	<span class='keyword'>if</span> (colon2 != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line">	    count2 = colon2 - tmp_str2;</td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">	} <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">	    count2 = strlen(tmp_str2);</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line">	<span class='comment'>/*compare base type */</span></td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">	<span class='keyword'>if</span> (strncmp(tmp_str1, tmp_str2,(count1&gt;count2)?count1:count2) != 0) {</td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">	    <span class='comment'>/* base types differ */</span></td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">	    <span class='keyword'>return</span> 0;</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">	free(tmp_str1);</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">	free(tmp_str2);</td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">	<span class='keyword'>if</span> ((lparen1 == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) || (lparen2 == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)) <span class='keyword'>return</span> -1;</td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">	<span class='keyword'>return</span> (strcmp(lparen1, lparen2) == 0);</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">    <span class='keyword'>return</span> ((t1 == t2) &amp;&amp; (t1_count == t2_count));</td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line"> <span class='comment'>* Compares the two formats.</span></td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line"> <span class='comment'>* Returns FFSformat_order</span></td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line"><span class='keyword'>static</span> FMformat_order</td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line">FMformat_cmp_diff(format1, format2, diff1, diff2)</td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">FMFormat format1;</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">FMFormat format2;</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line"><span class='keyword'>int</span> *diff1;			<span class='comment'>/* Number of fields present in format1 and</span> </td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line">				 <span class='comment'>* not in format2 */</span></td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line"><span class='keyword'>int</span> *diff2;			<span class='comment'>/* Number of fields present in format2 and</span> </td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line">				 <span class='comment'>* not in format1 */</span></td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line">    FMformat_order tmp_result = Format_Equal;</td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">    FMFieldList orig_field_list1 = format1-&gt;field_list;</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">    FMFieldList orig_field_list2 = format2-&gt;field_list;</td></tr>
+<tr><td class="num" id="LN147">147</td><td class="line">    FMFieldList field_list1, field_list2;</td></tr>
+<tr><td class="num" id="LN148">148</td><td class="line">    FMFormat *subformats1 = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>, *subformats2 = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN149">149</td><td class="line">    <span class='keyword'>int</span> field_count1, field_count2;</td></tr>
+<tr><td class="num" id="LN150">150</td><td class="line">    <span class='keyword'>int</span> i, j, limit;</td></tr>
+<tr><td class="num" id="LN151">151</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN152">152</td><td class="line">    <span class='keyword'>if</span> (format1 == format2) <span class='keyword'>return</span> Format_Equal;</td></tr>
+<tr><td class="num" id="LN153">153</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN154">154</td><td class="line">    <span class='comment'>/* count fields */</span></td></tr>
+<tr><td class="num" id="LN155">155</td><td class="line">    <span class='keyword'>for</span> (field_count1 = 0; orig_field_list1[field_count1].field_name != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN156">156</td><td class="line">	 field_count1++);</td></tr>
+<tr><td class="num" id="LN157">157</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN158">158</td><td class="line">    <span class='comment'>/* count fields */</span></td></tr>
+<tr><td class="num" id="LN159">159</td><td class="line">    <span class='keyword'>for</span> (field_count2 = 0; orig_field_list2[field_count2].field_name != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN160">160</td><td class="line">	 field_count2++);</td></tr>
+<tr><td class="num" id="LN161">161</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN162">162</td><td class="line">    field_list1 = malloc(<span class='keyword'>sizeof</span>(field_list1[0]) * (field_count1 + 1));</td></tr>
+<tr><td class="num" id="LN163">163</td><td class="line">    field_list2 = malloc(<span class='keyword'>sizeof</span>(field_list2[0]) * (field_count2 + 1));</td></tr>
+<tr><td class="num" id="LN164">164</td><td class="line">    memcpy(field_list1, orig_field_list1, </td></tr>
+<tr><td class="num" id="LN165">165</td><td class="line">	   <span class='keyword'>sizeof</span>(field_list1[0]) * (field_count1 + 1));</td></tr>
+<tr><td class="num" id="LN166">166</td><td class="line">    memcpy(field_list2, orig_field_list2, </td></tr>
+<tr><td class="num" id="LN167">167</td><td class="line">	   <span class='keyword'>sizeof</span>(field_list2[0]) * (field_count2 + 1));</td></tr>
+<tr><td class="num" id="LN168">168</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN169">169</td><td class="line">    qsort(field_list1, field_count1, <span class='keyword'>sizeof</span>(FMField), field_name_compar);</td></tr>
+<tr><td class="num" id="LN170">170</td><td class="line">    qsort(field_list2, field_count2, <span class='keyword'>sizeof</span>(FMField), field_name_compar);</td></tr>
+<tr><td class="num" id="LN171">171</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN172">172</td><td class="line">    limit = field_count1;</td></tr>
+<tr><td class="num" id="LN173">173</td><td class="line">    <span class='keyword'>if</span> (field_count2 &lt; limit)</td></tr>
+<tr><td class="num" id="LN174">174</td><td class="line">	limit = <span class="mrange">field_count2</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:9ex">Value stored to 'limit' is never read</div></td></tr>
+<tr><td class="num" id="LN175">175</td><td class="line">    i = j = 0;</td></tr>
+<tr><td class="num" id="LN176">176</td><td class="line">    <span class='keyword'>while</span> ((i &lt; field_count1) &amp;&amp; (j &lt; field_count2)) {</td></tr>
+<tr><td class="num" id="LN177">177</td><td class="line">	<span class='keyword'>int</span> name_cmp;</td></tr>
+<tr><td class="num" id="LN178">178</td><td class="line">	<span class='keyword'>if</span> ((name_cmp = strcmp(field_list1[i].field_name,</td></tr>
+<tr><td class="num" id="LN179">179</td><td class="line">			       field_list2[j].field_name)) == 0) {</td></tr>
+<tr><td class="num" id="LN180">180</td><td class="line">	    <span class='comment'>/* fields have same name */</span></td></tr>
+<tr><td class="num" id="LN181">181</td><td class="line">	    <span class='keyword'>if</span> (!IO_field_type_eq(field_list1[i].field_type,</td></tr>
+<tr><td class="num" id="LN182">182</td><td class="line">				  field_list2[j].field_type)) {</td></tr>
+<tr><td class="num" id="LN183">183</td><td class="line">		(*diff1)++;</td></tr>
+<tr><td class="num" id="LN184">184</td><td class="line">		(*diff2)++;</td></tr>
+<tr><td class="num" id="LN185">185</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN186">186</td><td class="line">	    i++;</td></tr>
+<tr><td class="num" id="LN187">187</td><td class="line">	    j++;</td></tr>
+<tr><td class="num" id="LN188">188</td><td class="line">	} <span class='keyword'>else</span> <span class='keyword'>if</span> (name_cmp &lt; 0) {</td></tr>
+<tr><td class="num" id="LN189">189</td><td class="line">	    <span class='comment'>/* name_cmp&lt;0 a field in field_list1 that doesn't appear in 2 */</span></td></tr>
+<tr><td class="num" id="LN190">190</td><td class="line">	    (*diff1)++;</td></tr>
+<tr><td class="num" id="LN191">191</td><td class="line">	    i++;</td></tr>
+<tr><td class="num" id="LN192">192</td><td class="line">	} <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN193">193</td><td class="line">	    (*diff2)++;</td></tr>
+<tr><td class="num" id="LN194">194</td><td class="line">	    j++;</td></tr>
+<tr><td class="num" id="LN195">195</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN196">196</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN197">197</td><td class="line">    (*diff1) += (field_count1 - i);</td></tr>
+<tr><td class="num" id="LN198">198</td><td class="line">    (*diff2) += (field_count2 - j);</td></tr>
+<tr><td class="num" id="LN199">199</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN200">200</td><td class="line">    <span class='comment'>/* go through subformats */</span></td></tr>
+<tr><td class="num" id="LN201">201</td><td class="line">    subformats1 = format1-&gt;subformats;</td></tr>
+<tr><td class="num" id="LN202">202</td><td class="line">    subformats2 = format2-&gt;subformats;</td></tr>
+<tr><td class="num" id="LN203">203</td><td class="line"><span class='comment'>/* TODO: Fix for unmatched subformats</span> </td></tr>
+<tr><td class="num" id="LN204">204</td><td class="line"> <span class='comment'>* -sandip */</span></td></tr>
+<tr><td class="num" id="LN205">205</td><td class="line">    <span class='keyword'>while</span> (subformats1 &amp;&amp; (*subformats1 != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)) {</td></tr>
+<tr><td class="num" id="LN206">206</td><td class="line">	<span class='keyword'>char</span> *sub1_name = name_of_FMformat(*subformats1);</td></tr>
+<tr><td class="num" id="LN207">207</td><td class="line">	<span class='keyword'>int</span> i = 0;</td></tr>
+<tr><td class="num" id="LN208">208</td><td class="line">	<span class='keyword'>if</span> (*subformats1 == format1) {</td></tr>
+<tr><td class="num" id="LN209">209</td><td class="line">	    <span class='comment'>/* self appears in subformat list, skip it */</span></td></tr>
+<tr><td class="num" id="LN210">210</td><td class="line">	    subformats1++;</td></tr>
+<tr><td class="num" id="LN211">211</td><td class="line">	    <span class='keyword'>continue</span>;</td></tr>
+<tr><td class="num" id="LN212">212</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN213">213</td><td class="line">	<span class='keyword'>while</span> (subformats2 &amp;&amp; (subformats2[i] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)) {</td></tr>
+<tr><td class="num" id="LN214">214</td><td class="line">	    <span class='keyword'>if</span> (strcmp(sub1_name, name_of_FMformat(subformats2[i])) == 0) {</td></tr>
+<tr><td class="num" id="LN215">215</td><td class="line">		<span class='comment'>/* same name, compare */</span></td></tr>
+<tr><td class="num" id="LN216">216</td><td class="line">		FMformat_cmp_diff(*subformats1, subformats2[i], diff1,</td></tr>
+<tr><td class="num" id="LN217">217</td><td class="line">				  diff2);</td></tr>
+<tr><td class="num" id="LN218">218</td><td class="line">		<span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN219">219</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN220">220</td><td class="line">	    i++;</td></tr>
+<tr><td class="num" id="LN221">221</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN222">222</td><td class="line">	subformats1++;</td></tr>
+<tr><td class="num" id="LN223">223</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN224">224</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN225">225</td><td class="line">    free(field_list1);</td></tr>
+<tr><td class="num" id="LN226">226</td><td class="line">    free(field_list2);</td></tr>
+<tr><td class="num" id="LN227">227</td><td class="line">    <span class='keyword'>if</span> (*diff1 == 0) {</td></tr>
+<tr><td class="num" id="LN228">228</td><td class="line">	<span class='keyword'>if</span> (*diff2 == 0)</td></tr>
+<tr><td class="num" id="LN229">229</td><td class="line">	    tmp_result = Format_Equal;</td></tr>
+<tr><td class="num" id="LN230">230</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN231">231</td><td class="line">	    tmp_result = Format_Less;</td></tr>
+<tr><td class="num" id="LN232">232</td><td class="line">    } <span class='keyword'>else</span> {</td></tr>
+<tr><td class="num" id="LN233">233</td><td class="line">	<span class='keyword'>if</span> (*diff2 == 0)</td></tr>
+<tr><td class="num" id="LN234">234</td><td class="line">	    tmp_result = Format_Greater;</td></tr>
+<tr><td class="num" id="LN235">235</td><td class="line">	<span class='keyword'>else</span></td></tr>
+<tr><td class="num" id="LN236">236</td><td class="line">	    tmp_result = Format_Incompatible;</td></tr>
+<tr><td class="num" id="LN237">237</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN238">238</td><td class="line">    <span class='keyword'>return</span> tmp_result;</td></tr>
+<tr><td class="num" id="LN239">239</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN240">240</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN241">241</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN242">242</td><td class="line"> <span class='comment'>* Not used anywhere yet. But may be useful later.</span></td></tr>
+<tr><td class="num" id="LN243">243</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN244">244</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN245">245</td><td class="line">count_total_IOfield_list(FMFieldList list, FMFormatList format_list)</td></tr>
+<tr><td class="num" id="LN246">246</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN247">247</td><td class="line">    <span class='keyword'>int</span> count = 0, i = 0;</td></tr>
+<tr><td class="num" id="LN248">248</td><td class="line">    <span class='keyword'>while</span> (list[i].field_name != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN249">249</td><td class="line">	<span class='keyword'>char</span> *base_type = base_data_type(list[i].field_type);</td></tr>
+<tr><td class="num" id="LN250">250</td><td class="line">	<span class='keyword'>if</span> (FMstr_to_data_type(base_type) == unknown_type) {</td></tr>
+<tr><td class="num" id="LN251">251</td><td class="line">	    <span class='keyword'>int</span> j = -1;</td></tr>
+<tr><td class="num" id="LN252">252</td><td class="line">	    <span class='keyword'>while</span> (format_list[++j].format_name) {</td></tr>
+<tr><td class="num" id="LN253">253</td><td class="line">		<span class='keyword'>if</span> (strcmp(base_type, format_list[j].format_name) == 0) {</td></tr>
+<tr><td class="num" id="LN254">254</td><td class="line">		    count +=</td></tr>
+<tr><td class="num" id="LN255">255</td><td class="line">			count_total_IOfield_list(format_list[j].field_list,</td></tr>
+<tr><td class="num" id="LN256">256</td><td class="line">						 format_list);</td></tr>
+<tr><td class="num" id="LN257">257</td><td class="line">		    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN258">258</td><td class="line">		}</td></tr>
+<tr><td class="num" id="LN259">259</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN260">260</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN261">261</td><td class="line">	free(base_type);</td></tr>
+<tr><td class="num" id="LN262">262</td><td class="line">	count++;</td></tr>
+<tr><td class="num" id="LN263">263</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN264">264</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN265">265</td><td class="line">    <span class='keyword'>return</span> count;</td></tr>
+<tr><td class="num" id="LN266">266</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN267">267</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN268">268</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN269">269</td><td class="line"> <span class='comment'>* Basically counts the total number of nodes in a data structure tree</span></td></tr>
+<tr><td class="num" id="LN270">270</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN271">271</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN272">272</td><td class="line">count_total_IOfield(FMFormat format)</td></tr>
+<tr><td class="num" id="LN273">273</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN274">274</td><td class="line">    <span class='keyword'>int</span> count = 0;</td></tr>
+<tr><td class="num" id="LN275">275</td><td class="line">    <span class='keyword'>if</span> (format) {</td></tr>
+<tr><td class="num" id="LN276">276</td><td class="line">	<span class='keyword'>int</span> i;</td></tr>
+<tr><td class="num" id="LN277">277</td><td class="line">	count = format-&gt;field_count;</td></tr>
+<tr><td class="num" id="LN278">278</td><td class="line">	<span class='keyword'>for</span> (i = 0; i &lt; format-&gt;field_count; i++)</td></tr>
+<tr><td class="num" id="LN279">279</td><td class="line">	    <span class='keyword'>if</span> (format-&gt;field_subformats[i] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN280">280</td><td class="line">		count += count_total_IOfield(format-&gt;field_subformats[i]);</td></tr>
+<tr><td class="num" id="LN281">281</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN282">282</td><td class="line">    <span class='keyword'>return</span> count;</td></tr>
+<tr><td class="num" id="LN283">283</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN284">284</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN285">285</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN286">286</td><td class="line"> <span class='comment'>* Implements a simple threshold-based technique to decide whether or not</span></td></tr>
+<tr><td class="num" id="LN287">287</td><td class="line"> <span class='comment'>* we should do conversion at all when the comparison result between best</span> </td></tr>
+<tr><td class="num" id="LN288">288</td><td class="line"> <span class='comment'>* possible pair is Format_Incompatible</span></td></tr>
+<tr><td class="num" id="LN289">289</td><td class="line"> <span class='comment'>* The idea is to keep the number of missing fields below a certain threshold.</span></td></tr>
+<tr><td class="num" id="LN290">290</td><td class="line"> <span class='comment'>* There is scope of smarter algorithm here.</span></td></tr>
+<tr><td class="num" id="LN291">291</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN292">292</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN293">293</td><td class="line">check_compat_thresh(FMFormat_Comp_result * comp_result, FMFormat format)</td></tr>
+<tr><td class="num" id="LN294">294</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN295">295</td><td class="line">    <span class='keyword'>float</span> curr_thresh;</td></tr>
+<tr><td class="num" id="LN296">296</td><td class="line">    <span class='keyword'>int</span> field_count = count_total_IOfield(format);</td></tr>
+<tr><td class="num" id="LN297">297</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN298">298</td><td class="line">    curr_thresh = (<span class='keyword'>float</span>) comp_result-&gt;diff2 / (<span class='keyword'>float</span>) field_count;</td></tr>
+<tr><td class="num" id="LN299">299</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN300">300</td><td class="line">    <span class='keyword'>return</span> (curr_thresh &lt; (1.0 - <span class='macro'>COMPAT_THRESH<span class='expansion'>0.8</span></span>));</td></tr>
+<tr><td class="num" id="LN301">301</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN302">302</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN303">303</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN304">304</td><td class="line"> <span class='comment'>* Try to find a format in 'formatList' which best matches the 'format'</span></td></tr>
+<tr><td class="num" id="LN305">305</td><td class="line"> <span class='comment'>* Returns the index of best match found or</span> </td></tr>
+<tr><td class="num" id="LN306">306</td><td class="line"> <span class='comment'>* -1 if no better comparison (as specified by comp_result) found.</span></td></tr>
+<tr><td class="num" id="LN307">307</td><td class="line"> <span class='comment'>* comp_result is modified accordingly to indicate the current match purity</span></td></tr>
+<tr><td class="num" id="LN308">308</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN309">309</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN310">310</td><td class="line">IOformat_list_cmp(FMFormat format, FMFormat *formatList, <span class='keyword'>int</span> listSize,</td></tr>
+<tr><td class="num" id="LN311">311</td><td class="line">		  FMFormat_Comp_result * comp_result)</td></tr>
+<tr><td class="num" id="LN312">312</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN313">313</td><td class="line">    <span class='keyword'>int</span> i, diff1, diff2, nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN314">314</td><td class="line">    FMformat_order result = Format_Incompatible;</td></tr>
+<tr><td class="num" id="LN315">315</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN316">316</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; listSize; i++) {</td></tr>
+<tr><td class="num" id="LN317">317</td><td class="line">	<span class='keyword'>int</span> order;</td></tr>
+<tr><td class="num" id="LN318">318</td><td class="line">	<span class='keyword'>if</span> (formatList[i] == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN319">319</td><td class="line">	    <span class='keyword'>continue</span>;</td></tr>
+<tr><td class="num" id="LN320">320</td><td class="line">	order =</td></tr>
+<tr><td class="num" id="LN321">321</td><td class="line">	    strcmp(name_of_FMformat(format),</td></tr>
+<tr><td class="num" id="LN322">322</td><td class="line">		   name_of_FMformat(formatList[i]));</td></tr>
+<tr><td class="num" id="LN323">323</td><td class="line">	<span class='keyword'>if</span> (order != 0) <span class='keyword'>continue</span>;</td></tr>
+<tr><td class="num" id="LN324">324</td><td class="line">	diff1 = diff2 = 0;</td></tr>
+<tr><td class="num" id="LN325">325</td><td class="line">	result = FMformat_cmp_diff(format, formatList[i], &amp;diff1, &amp;diff2);</td></tr>
+<tr><td class="num" id="LN326">326</td><td class="line">	<span class='keyword'>if</span> (result == Format_Equal) {</td></tr>
+<tr><td class="num" id="LN327">327</td><td class="line">	    comp_result-&gt;diff1 = comp_result-&gt;diff2 = 0;</td></tr>
+<tr><td class="num" id="LN328">328</td><td class="line">	    nearest_format = i;</td></tr>
+<tr><td class="num" id="LN329">329</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN330">330</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN331">331</td><td class="line">	<span class='keyword'>if</span> ((diff2 &lt; comp_result-&gt;diff2) ||</td></tr>
+<tr><td class="num" id="LN332">332</td><td class="line">	    (diff2 == comp_result-&gt;diff2 &amp;&amp; diff1 &lt; comp_result-&gt;diff1)) {</td></tr>
+<tr><td class="num" id="LN333">333</td><td class="line">	    comp_result-&gt;diff1 = diff1;</td></tr>
+<tr><td class="num" id="LN334">334</td><td class="line">	    comp_result-&gt;diff2 = diff2;</td></tr>
+<tr><td class="num" id="LN335">335</td><td class="line">	    nearest_format = i;</td></tr>
+<tr><td class="num" id="LN336">336</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN337">337</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN338">338</td><td class="line">    <span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN339">339</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN340">340</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN341">341</td><td class="line"><span class='keyword'>static</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN342">342</td><td class="line">IOformat_list_cmp2(FMFormat format, FMFormat *formatList, <span class='keyword'>int</span> listSize,</td></tr>
+<tr><td class="num" id="LN343">343</td><td class="line">		  FMFormat_Comp_result * comp_result)</td></tr>
+<tr><td class="num" id="LN344">344</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN345">345</td><td class="line">    <span class='keyword'>int</span> i, diff1, diff2, nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN346">346</td><td class="line">    FMformat_order result = Format_Incompatible;</td></tr>
+<tr><td class="num" id="LN347">347</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN348">348</td><td class="line">    <span class='keyword'>for</span> (i = 0; i &lt; listSize; i++) {</td></tr>
+<tr><td class="num" id="LN349">349</td><td class="line">	<span class='keyword'>if</span> (formatList[i] == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN350">350</td><td class="line">	    <span class='keyword'>continue</span>;</td></tr>
+<tr><td class="num" id="LN351">351</td><td class="line">	diff1 = diff2 = 0;</td></tr>
+<tr><td class="num" id="LN352">352</td><td class="line">	result = FMformat_cmp_diff(format, formatList[i], &amp;diff1, &amp;diff2);</td></tr>
+<tr><td class="num" id="LN353">353</td><td class="line">	<span class='keyword'>if</span> (result == Format_Equal) {</td></tr>
+<tr><td class="num" id="LN354">354</td><td class="line">	    comp_result-&gt;diff1 = comp_result-&gt;diff2 = 0;</td></tr>
+<tr><td class="num" id="LN355">355</td><td class="line">	    nearest_format = i;</td></tr>
+<tr><td class="num" id="LN356">356</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN357">357</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN358">358</td><td class="line">	<span class='keyword'>if</span> ((diff2 &lt; comp_result-&gt;diff2) ||</td></tr>
+<tr><td class="num" id="LN359">359</td><td class="line">	    (diff2 == comp_result-&gt;diff2 &amp;&amp; diff1 &lt; comp_result-&gt;diff1)) {</td></tr>
+<tr><td class="num" id="LN360">360</td><td class="line">	    comp_result-&gt;diff1 = diff1;</td></tr>
+<tr><td class="num" id="LN361">361</td><td class="line">	    comp_result-&gt;diff2 = diff2;</td></tr>
+<tr><td class="num" id="LN362">362</td><td class="line">	    nearest_format = i;</td></tr>
+<tr><td class="num" id="LN363">363</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN364">364</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN365">365</td><td class="line">    <span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN366">366</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN367">367</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN368">368</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN369">369</td><td class="line"> <span class='comment'>* First check whether 'format' matches exactly with any of 'formatList'</span></td></tr>
+<tr><td class="num" id="LN370">370</td><td class="line"> <span class='comment'>* If exact match not found, try to match with compatible formats (formats</span> </td></tr>
+<tr><td class="num" id="LN371">371</td><td class="line"> <span class='comment'>* that 'format' can be translated to)</span></td></tr>
+<tr><td class="num" id="LN372">372</td><td class="line"> <span class='comment'>* Returns the index of best match found or</span> </td></tr>
+<tr><td class="num" id="LN373">373</td><td class="line"> <span class='comment'>* -1 if no better comparison (as specified by comp_result) found.</span></td></tr>
+<tr><td class="num" id="LN374">374</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN375">375</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN376">376</td><td class="line">FMformat_compat_cmp(FMFormat format, FMFormat *formatList,</td></tr>
+<tr><td class="num" id="LN377">377</td><td class="line">		    <span class='keyword'>int</span> listSize, FMcompat_formats * older_format)</td></tr>
+<tr><td class="num" id="LN378">378</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN379">379</td><td class="line">    FMFormat prior_format;</td></tr>
+<tr><td class="num" id="LN380">380</td><td class="line">    <span class='keyword'>int</span> i = 0, nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN381">381</td><td class="line">    FMcompat_formats compats;</td></tr>
+<tr><td class="num" id="LN382">382</td><td class="line">    FMFormat_Comp_result comp_result = { <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span>, <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span> };</td></tr>
+<tr><td class="num" id="LN383">383</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN384">384</td><td class="line">    *older_format = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN385">385</td><td class="line">    nearest_format =</td></tr>
+<tr><td class="num" id="LN386">386</td><td class="line">	IOformat_list_cmp(format, formatList, listSize, &amp;comp_result);</td></tr>
+<tr><td class="num" id="LN387">387</td><td class="line">    <span class='keyword'>if</span> (nearest_format != -1 &amp;&amp; !comp_result.diff1 &amp;&amp; !comp_result.diff2)</td></tr>
+<tr><td class="num" id="LN388">388</td><td class="line">	<span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN389">389</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN390">390</td><td class="line">    compats = FMget_compat_formats(format);</td></tr>
+<tr><td class="num" id="LN391">391</td><td class="line">    <span class='keyword'>if</span> (compats == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)</td></tr>
+<tr><td class="num" id="LN392">392</td><td class="line">	<span class='keyword'>return</span> -1;</td></tr>
+<tr><td class="num" id="LN393">393</td><td class="line">    <span class='keyword'>while</span> ((prior_format = compats[i].prior_format)) {</td></tr>
+<tr><td class="num" id="LN394">394</td><td class="line">	<span class='keyword'>int</span> tmp = IOformat_list_cmp(prior_format, formatList, listSize,</td></tr>
+<tr><td class="num" id="LN395">395</td><td class="line">				    &amp;comp_result);</td></tr>
+<tr><td class="num" id="LN396">396</td><td class="line">	<span class='keyword'>if</span> (tmp != -1) {</td></tr>
+<tr><td class="num" id="LN397">397</td><td class="line">	    nearest_format = tmp;</td></tr>
+<tr><td class="num" id="LN398">398</td><td class="line">	    *older_format = &amp;compats[i];</td></tr>
+<tr><td class="num" id="LN399">399</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN400">400</td><td class="line">	<span class='keyword'>if</span> (comp_result.diff1 == 0 &amp;&amp; comp_result.diff2 == 0)</td></tr>
+<tr><td class="num" id="LN401">401</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN402">402</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN403">403</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN404">404</td><td class="line">    <span class='keyword'>if</span> (nearest_format != -1 &amp;&amp;</td></tr>
+<tr><td class="num" id="LN405">405</td><td class="line">	!check_compat_thresh(&amp;comp_result, formatList[nearest_format])){</td></tr>
+<tr><td class="num" id="LN406">406</td><td class="line">	nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN407">407</td><td class="line">	*older_format = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN408">408</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN409">409</td><td class="line">    <span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN410">410</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN411">411</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN412">412</td><td class="line"><span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN413">413</td><td class="line"> <span class='comment'>* First check whether 'format' matches exactly with any of 'formatList'</span></td></tr>
+<tr><td class="num" id="LN414">414</td><td class="line"> <span class='comment'>* If exact match not found, try to match with compatible formats (formats</span> </td></tr>
+<tr><td class="num" id="LN415">415</td><td class="line"> <span class='comment'>* that 'format' can be translated to)</span></td></tr>
+<tr><td class="num" id="LN416">416</td><td class="line"> <span class='comment'>* Returns the index of best match found or</span> </td></tr>
+<tr><td class="num" id="LN417">417</td><td class="line"> <span class='comment'>* -1 if no better comparison (as specified by comp_result) found.</span></td></tr>
+<tr><td class="num" id="LN418">418</td><td class="line"> <span class='comment'>* */</span></td></tr>
+<tr><td class="num" id="LN419">419</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>int</span></td></tr>
+<tr><td class="num" id="LN420">420</td><td class="line">FMformat_compat_cmp2(FMFormat format, FMFormat *formatList,</td></tr>
+<tr><td class="num" id="LN421">421</td><td class="line">		    <span class='keyword'>int</span> listSize, FMcompat_formats * older_format)</td></tr>
+<tr><td class="num" id="LN422">422</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN423">423</td><td class="line">    FMFormat prior_format;</td></tr>
+<tr><td class="num" id="LN424">424</td><td class="line">    <span class='keyword'>int</span> i = 0, nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN425">425</td><td class="line">    FMcompat_formats compats;</td></tr>
+<tr><td class="num" id="LN426">426</td><td class="line">    FMFormat_Comp_result saved_comp_result = { <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span>, <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span> };</td></tr>
+<tr><td class="num" id="LN427">427</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN428">428</td><td class="line">    *older_format = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN429">429</td><td class="line">    nearest_format =</td></tr>
+<tr><td class="num" id="LN430">430</td><td class="line">	IOformat_list_cmp2(format, formatList, listSize, &amp;saved_comp_result);</td></tr>
+<tr><td class="num" id="LN431">431</td><td class="line">    <span class='keyword'>if</span> (nearest_format != -1 &amp;&amp; !saved_comp_result.diff1 &amp;&amp; </td></tr>
+<tr><td class="num" id="LN432">432</td><td class="line">	!saved_comp_result.diff2) {</td></tr>
+<tr><td class="num" id="LN433">433</td><td class="line">	<span class='comment'>/* exact match */</span></td></tr>
+<tr><td class="num" id="LN434">434</td><td class="line">	<span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN435">435</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN436">436</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN437">437</td><td class="line">    compats = FMget_compat_formats(format);</td></tr>
+<tr><td class="num" id="LN438">438</td><td class="line">    <span class='keyword'>if</span> (compats == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN439">439</td><td class="line">	<span class='keyword'>if</span> (!saved_comp_result.diff2) {</td></tr>
+<tr><td class="num" id="LN440">440</td><td class="line">	    <span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN441">441</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN442">442</td><td class="line">	<span class='keyword'>return</span> -1;</td></tr>
+<tr><td class="num" id="LN443">443</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN444">444</td><td class="line">    <span class='keyword'>while</span> ((prior_format = compats[i].prior_format)) {</td></tr>
+<tr><td class="num" id="LN445">445</td><td class="line">	FMFormat_Comp_result comp_result={<span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span>, <span class='macro'>MAX_DIFF<span class='expansion'>0xFFFF</span></span>};</td></tr>
+<tr><td class="num" id="LN446">446</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN447">447</td><td class="line">	<span class='keyword'>int</span> tmp = IOformat_list_cmp2(prior_format, formatList, listSize,</td></tr>
+<tr><td class="num" id="LN448">448</td><td class="line">				    &amp;comp_result);</td></tr>
+<tr><td class="num" id="LN449">449</td><td class="line">	<span class='keyword'>if</span> (tmp != -1) {</td></tr>
+<tr><td class="num" id="LN450">450</td><td class="line">	    <span class='keyword'>if</span> (saved_comp_result.diff1 &gt; comp_result.diff1) {</td></tr>
+<tr><td class="num" id="LN451">451</td><td class="line">		nearest_format = tmp;</td></tr>
+<tr><td class="num" id="LN452">452</td><td class="line">		*older_format = &amp;compats[i];</td></tr>
+<tr><td class="num" id="LN453">453</td><td class="line">		saved_comp_result = comp_result;</td></tr>
+<tr><td class="num" id="LN454">454</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN455">455</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN456">456</td><td class="line">	<span class='keyword'>if</span> (comp_result.diff1 == 0 &amp;&amp; comp_result.diff2 == 0)</td></tr>
+<tr><td class="num" id="LN457">457</td><td class="line">	    <span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN458">458</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN459">459</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN460">460</td><td class="line">    <span class='keyword'>if</span> (nearest_format != -1 &amp;&amp;</td></tr>
+<tr><td class="num" id="LN461">461</td><td class="line">	!check_compat_thresh(&amp;saved_comp_result, formatList[nearest_format])){</td></tr>
+<tr><td class="num" id="LN462">462</td><td class="line">	nearest_format = -1;</td></tr>
+<tr><td class="num" id="LN463">463</td><td class="line">	*older_format = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN464">464</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN465">465</td><td class="line">    <span class='keyword'>return</span> nearest_format;</td></tr>
+<tr><td class="num" id="LN466">466</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN467">467</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN468">468</td><td class="line"><span class='keyword'>extern</span> <span class='keyword'>void</span> *</td></tr>
+<tr><td class="num" id="LN469">469</td><td class="line">FFScreate_compat_info(prior_format, xform_code, len_p)</td></tr>
+<tr><td class="num" id="LN470">470</td><td class="line">FMFormat prior_format;</td></tr>
+<tr><td class="num" id="LN471">471</td><td class="line"><span class='keyword'>char</span> *xform_code;</td></tr>
+<tr><td class="num" id="LN472">472</td><td class="line"><span class='keyword'>int</span> *len_p;</td></tr>
+<tr><td class="num" id="LN473">473</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN474">474</td><td class="line">    <span class='keyword'>char</span> *block;</td></tr>
+<tr><td class="num" id="LN475">475</td><td class="line">    <span class='keyword'>int</span> block_len = strlen(xform_code) + prior_format-&gt;server_ID.length +1;</td></tr>
+<tr><td class="num" id="LN476">476</td><td class="line">    block = malloc(block_len);</td></tr>
+<tr><td class="num" id="LN477">477</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN478">478</td><td class="line">    memcpy(block, prior_format-&gt;server_ID.value,</td></tr>
+<tr><td class="num" id="LN479">479</td><td class="line">	   prior_format-&gt;server_ID.length);</td></tr>
+<tr><td class="num" id="LN480">480</td><td class="line">    memcpy(block + prior_format-&gt;server_ID.length,</td></tr>
+<tr><td class="num" id="LN481">481</td><td class="line">	   xform_code, block_len - prior_format-&gt;server_ID.length);</td></tr>
+<tr><td class="num" id="LN482">482</td><td class="line">    *len_p = block_len;</td></tr>
+<tr><td class="num" id="LN483">483</td><td class="line">    <span class='keyword'>return</span> block;</td></tr>
+<tr><td class="num" id="LN484">484</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN485">485</td><td class="line">    </td></tr>
+<tr><td class="num" id="LN486">486</td><td class="line"><span class='directive'>#ifdef NOT_DEF</span></td></tr>
+<tr><td class="num" id="LN487">487</td><td class="line"><span class='comment'>/**</span></td></tr>
+<tr><td class="num" id="LN488">488</td><td class="line"> <span class='comment'>* Localize the "format" and set the conversion context to convert the wire</span></td></tr>
+<tr><td class="num" id="LN489">489</td><td class="line"> <span class='comment'>* format to this localized format.</span></td></tr>
+<tr><td class="num" id="LN490">490</td><td class="line"> <span class='comment'>* Return the localized format list</span></td></tr>
+<tr><td class="num" id="LN491">491</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN492">492</td><td class="line"><span class='keyword'>extern</span> FMFormatList</td></tr>
+<tr><td class="num" id="LN493">493</td><td class="line">IOlocalize_conv(FFSContext context, FMFormat format)</td></tr>
+<tr><td class="num" id="LN494">494</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN495">495</td><td class="line">    FMFormatList local_format_list = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN496">496</td><td class="line">    FMFormat *wire_subformats = format-&gt;subformats;</td></tr>
+<tr><td class="num" id="LN497">497</td><td class="line">    <span class='keyword'>int</span> i = 0;</td></tr>
+<tr><td class="num" id="LN498">498</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN499">499</td><td class="line">    <span class='keyword'>while</span> (wire_subformats[i] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN500">500</td><td class="line">	<span class='keyword'>int</span> local_struct_size;</td></tr>
+<tr><td class="num" id="LN501">501</td><td class="line">	FMFieldList wire_field_list = wire_subformats[i]-&gt;field_list;</td></tr>
+<tr><td class="num" id="LN502">502</td><td class="line">	FMFieldList local_field_list = copy_field_list(wire_field_list);</td></tr>
+<tr><td class="num" id="LN503">503</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN504">504</td><td class="line">	<span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN505">505</td><td class="line">	 <span class='comment'>* determine an appropriate native layout for this structure</span></td></tr>
+<tr><td class="num" id="LN506">506</td><td class="line">	 <span class='comment'>* and set the conversion</span></td></tr>
+<tr><td class="num" id="LN507">507</td><td class="line">	 <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN508">508</td><td class="line">	local_field_list = localize_field_list(local_field_list, context);</td></tr>
+<tr><td class="num" id="LN509">509</td><td class="line">	local_struct_size =</td></tr>
+<tr><td class="num" id="LN510">510</td><td class="line">	    struct_size_field_list(local_field_list, <span class='keyword'>sizeof</span>(<span class='keyword'>char</span> *));</td></tr>
+<tr><td class="num" id="LN511">511</td><td class="line">	set_conversion_IOcontext(context, wire_subformats[i],</td></tr>
+<tr><td class="num" id="LN512">512</td><td class="line">				 local_field_list, local_struct_size);</td></tr>
+<tr><td class="num" id="LN513">513</td><td class="line">	local_format_list =</td></tr>
+<tr><td class="num" id="LN514">514</td><td class="line">	    realloc(local_format_list,</td></tr>
+<tr><td class="num" id="LN515">515</td><td class="line">		    <span class='keyword'>sizeof</span>(local_format_list[0]) * (i + 2));</td></tr>
+<tr><td class="num" id="LN516">516</td><td class="line">	local_format_list[i].format_name =</td></tr>
+<tr><td class="num" id="LN517">517</td><td class="line">	    strdup(name_of_FMformat(wire_subformats[i]));</td></tr>
+<tr><td class="num" id="LN518">518</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN519">519</td><td class="line">	local_format_list[i].field_list = local_field_list;</td></tr>
+<tr><td class="num" id="LN520">520</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN521">521</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN522">522</td><td class="line">    local_format_list[i].format_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN523">523</td><td class="line">    free(wire_subformats);</td></tr>
+<tr><td class="num" id="LN524">524</td><td class="line">    <span class='keyword'>return</span> local_format_list;</td></tr>
+<tr><td class="num" id="LN525">525</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN526">526</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN527">527</td><td class="line"><span class='comment'>/**</span></td></tr>
+<tr><td class="num" id="LN528">528</td><td class="line"> <span class='comment'>* Localize the "format".</span></td></tr>
+<tr><td class="num" id="LN529">529</td><td class="line"> <span class='comment'>* Register this localized format to the "context".</span></td></tr>
+<tr><td class="num" id="LN530">530</td><td class="line"> <span class='comment'>* Set the conversion context to convert this localized format to native</span> </td></tr>
+<tr><td class="num" id="LN531">531</td><td class="line"> <span class='comment'>* format as specified by native_field_list and native_subformat_list.</span></td></tr>
+<tr><td class="num" id="LN532">532</td><td class="line"> <span class='comment'>* Return the localized format list.</span></td></tr>
+<tr><td class="num" id="LN533">533</td><td class="line"> <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN534">534</td><td class="line"><span class='keyword'>extern</span> FMFormatList</td></tr>
+<tr><td class="num" id="LN535">535</td><td class="line">IOlocalize_register_conv(FMContext context, FMFormat format,</td></tr>
+<tr><td class="num" id="LN536">536</td><td class="line">			 FMFieldList native_field_list,</td></tr>
+<tr><td class="num" id="LN537">537</td><td class="line">			 FMFormatList native_subformat_list,</td></tr>
+<tr><td class="num" id="LN538">538</td><td class="line">			 FMFormat *local_prior_format,</td></tr>
+<tr><td class="num" id="LN539">539</td><td class="line">			 <span class='keyword'>int</span> *local_struct_size_out)</td></tr>
+<tr><td class="num" id="LN540">540</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN541">541</td><td class="line">    FMFormatList local_f1_formats = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN542">542</td><td class="line">    FMFormat *wire_subformats = format-&gt;subformats;</td></tr>
+<tr><td class="num" id="LN543">543</td><td class="line">    <span class='keyword'>int</span> i = 0, native_struct_size;</td></tr>
+<tr><td class="num" id="LN544">544</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN545">545</td><td class="line">    native_struct_size = struct_size_field_list(native_field_list,</td></tr>
+<tr><td class="num" id="LN546">546</td><td class="line">						<span class='keyword'>sizeof</span>(<span class='keyword'>char</span> *));</td></tr>
+<tr><td class="num" id="LN547">547</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN548">548</td><td class="line"><span class='directive'>#ifdef NOTDEF</span></td></tr>
+<tr><td class="num" id="LN549">549</td><td class="line">    <span class='keyword'>while</span> (wire_subformats[i] != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN550">550</td><td class="line">	<span class='keyword'>int</span> local_struct_size;</td></tr>
+<tr><td class="num" id="LN551">551</td><td class="line">	FMFieldList wire_field_list =</td></tr>
+<tr><td class="num" id="LN552">552</td><td class="line">	    field_list_of_IOformat(wire_subformats[i]);</td></tr>
+<tr><td class="num" id="LN553">553</td><td class="line">	FMFieldList local_field_list = copy_field_list(wire_field_list);</td></tr>
+<tr><td class="num" id="LN554">554</td><td class="line">	<span class='keyword'>char</span> *subformat_name = name_of_IOformat(wire_subformats[i]);</td></tr>
+<tr><td class="num" id="LN555">555</td><td class="line">	<span class='keyword'>int</span> j = 0;</td></tr>
+<tr><td class="num" id="LN556">556</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN557">557</td><td class="line">	<span class='comment'>/*</span> </td></tr>
+<tr><td class="num" id="LN558">558</td><td class="line">	 <span class='comment'>* determine an appropriate native layout for this structure</span></td></tr>
+<tr><td class="num" id="LN559">559</td><td class="line">	 <span class='comment'>* and set the conversion</span></td></tr>
+<tr><td class="num" id="LN560">560</td><td class="line">	 <span class='comment'>*/</span></td></tr>
+<tr><td class="num" id="LN561">561</td><td class="line">	local_field_list = localize_field_list(local_field_list, context);</td></tr>
+<tr><td class="num" id="LN562">562</td><td class="line">	local_struct_size =</td></tr>
+<tr><td class="num" id="LN563">563</td><td class="line">	    struct_size_field_list(local_field_list, <span class='keyword'>sizeof</span>(<span class='keyword'>char</span> *));</td></tr>
+<tr><td class="num" id="LN564">564</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN565">565</td><td class="line">	<span class='comment'>/* We don't need the subformats. The last one will be the top</span></td></tr>
+<tr><td class="num" id="LN566">566</td><td class="line">	 <span class='comment'>* level FMFormat */</span></td></tr>
+<tr><td class="num" id="LN567">567</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN568">568</td><td class="line">	*local_prior_format =</td></tr>
+<tr><td class="num" id="LN569">569</td><td class="line">	    register_IOcontext_format(subformat_name, local_field_list,</td></tr>
+<tr><td class="num" id="LN570">570</td><td class="line">				      context);</td></tr>
+<tr><td class="num" id="LN571">571</td><td class="line">	<span class='keyword'>while</span> (native_subformat_list</td></tr>
+<tr><td class="num" id="LN572">572</td><td class="line">	       &amp;&amp; (native_subformat_list[j].format_name != <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>)) {</td></tr>
+<tr><td class="num" id="LN573">573</td><td class="line">	    <span class='keyword'>if</span> (strcmp</td></tr>
+<tr><td class="num" id="LN574">574</td><td class="line">		(native_subformat_list[j].format_name,</td></tr>
+<tr><td class="num" id="LN575">575</td><td class="line">		 subformat_name) == 0) {</td></tr>
+<tr><td class="num" id="LN576">576</td><td class="line">		FMFieldList sub_field_list;</td></tr>
+<tr><td class="num" id="LN577">577</td><td class="line">		<span class='keyword'>int</span> sub_struct_size;</td></tr>
+<tr><td class="num" id="LN578">578</td><td class="line">		sub_field_list = native_subformat_list[j].field_list;</td></tr>
+<tr><td class="num" id="LN579">579</td><td class="line">		sub_struct_size = struct_size_field_list(sub_field_list,</td></tr>
+<tr><td class="num" id="LN580">580</td><td class="line">							 <span class='keyword'>sizeof</span>(<span class='keyword'>char</span> *));</td></tr>
+<tr><td class="num" id="LN581">581</td><td class="line">		set_conversion_IOcontext(context,</td></tr>
+<tr><td class="num" id="LN582">582</td><td class="line">					 *local_prior_format,</td></tr>
+<tr><td class="num" id="LN583">583</td><td class="line">					 sub_field_list, sub_struct_size);</td></tr>
+<tr><td class="num" id="LN584">584</td><td class="line">		<span class='keyword'>break</span>;</td></tr>
+<tr><td class="num" id="LN585">585</td><td class="line">	    }</td></tr>
+<tr><td class="num" id="LN586">586</td><td class="line">	    j++;</td></tr>
+<tr><td class="num" id="LN587">587</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN588">588</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN589">589</td><td class="line">	local_f1_formats = realloc(local_f1_formats,</td></tr>
+<tr><td class="num" id="LN590">590</td><td class="line">				   <span class='keyword'>sizeof</span>(local_f1_formats[0]) * (i + 2));</td></tr>
+<tr><td class="num" id="LN591">591</td><td class="line">	local_f1_formats[i].format_name =</td></tr>
+<tr><td class="num" id="LN592">592</td><td class="line">	    strdup(name_of_IOformat(wire_subformats[i]));</td></tr>
+<tr><td class="num" id="LN593">593</td><td class="line">	local_f1_formats[i].field_list = local_field_list;</td></tr>
+<tr><td class="num" id="LN594">594</td><td class="line">	<span class='keyword'>if</span> (wire_subformats[i + 1] == <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>) {</td></tr>
+<tr><td class="num" id="LN595">595</td><td class="line">	    <span class='comment'>/* last one */</span></td></tr>
+<tr><td class="num" id="LN596">596</td><td class="line">	    *local_struct_size_out = local_struct_size;</td></tr>
+<tr><td class="num" id="LN597">597</td><td class="line">	    local_f1_formats[i + 1].format_name = <span class='macro'>NULL<span class='expansion'>((void*)0)</span></span>;</td></tr>
+<tr><td class="num" id="LN598">598</td><td class="line">	}</td></tr>
+<tr><td class="num" id="LN599">599</td><td class="line">	i++;</td></tr>
+<tr><td class="num" id="LN600">600</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN601">601</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN602">602</td><td class="line">    set_conversion_IOcontext(context, *local_prior_format,</td></tr>
+<tr><td class="num" id="LN603">603</td><td class="line">			     native_field_list, native_struct_size);</td></tr>
+<tr><td class="num" id="LN604">604</td><td class="line">    free(wire_subformats);</td></tr>
+<tr><td class="num" id="LN605">605</td><td class="line">    <span class='keyword'>return</span> local_f1_formats;</td></tr>
+<tr><td class="num" id="LN606">606</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN607">607</td><td class="line"><span class='directive'>#endif</span></td></tr>
+</table></body></html>
