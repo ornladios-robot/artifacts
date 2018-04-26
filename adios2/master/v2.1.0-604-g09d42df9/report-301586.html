@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+<head>
+<title>/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp</title>
+<style type="text/css">
+ body { color:#000000; background-color:#ffffff }
+ body { font-family:Helvetica, sans-serif; font-size:10pt }
+ h1 { font-size:14pt }
+ .code { border-collapse:collapse; width:100%; }
+ .code { font-family: "Monospace", monospace; font-size:10pt }
+ .code { line-height: 1.2em }
+ .comment { color: green; font-style: oblique }
+ .keyword { color: blue }
+ .string_literal { color: red }
+ .directive { color: darkmagenta }
+ .expansion { display: none; }
+ .macro:hover .expansion { display: block; border: 2px solid #FF0000; padding: 2px; background-color:#FFF0F0; font-weight: normal;   -webkit-border-radius:5px;  -webkit-box-shadow:1px 1px 7px #000;   border-radius:5px;  box-shadow:1px 1px 7px #000; position: absolute; top: -1em; left:10em; z-index: 1 } 
+ .macro { color: darkmagenta; background-color:LemonChiffon; position: relative }
+ .num { width:2.5em; padding-right:2ex; background-color:#eeeeee }
+ .num { text-align:right; font-size:8pt }
+ .num { color:#444444 }
+ .line { padding-left: 1ex; border-left: 3px solid #ccc }
+ .line { white-space: pre }
+ .msg { -webkit-box-shadow:1px 1px 7px #000 }
+ .msg { box-shadow:1px 1px 7px #000 }
+ .msg { -webkit-border-radius:5px }
+ .msg { border-radius:5px }
+ .msg { font-family:Helvetica, sans-serif; font-size:8pt }
+ .msg { float:left }
+ .msg { padding:0.25em 1ex 0.25em 1ex }
+ .msg { margin-top:10px; margin-bottom:10px }
+ .msg { font-weight:bold }
+ .msg { max-width:60em; word-wrap: break-word; white-space: pre-wrap }
+ .msgT { padding:0x; spacing:0x }
+ .msgEvent { background-color:#fff8b4; color:#000000 }
+ .msgControl { background-color:#bbbbbb; color:#000000 }
+ .msgNote { background-color:#ddeeff; color:#000000 }
+ .mrange { background-color:#dfddf3 }
+ .mrange { border-bottom:1px solid #6F9DBE }
+ .PathIndex { font-weight: bold; padding:0px 5px; margin-right:5px; }
+ .PathIndex { -webkit-border-radius:8px }
+ .PathIndex { border-radius:8px }
+ .PathIndexEvent { background-color:#bfba87 }
+ .PathIndexControl { background-color:#8c8c8c }
+ .PathNav a { text-decoration:none; font-size: larger }
+ .CodeInsertionHint { font-weight: bold; background-color: #10dd10 }
+ .CodeRemovalHint { background-color:#de1010 }
+ .CodeRemovalHint { border-bottom:1px solid #6F9DBE }
+ table.simpletable {
+   padding: 5px;
+   font-size:12pt;
+   margin:20px;
+   border-collapse: collapse; border-spacing: 0px;
+ }
+ td.rowname {
+   text-align: right;
+   vertical-align: top;
+   font-weight: bold;
+   color:#444444;
+   padding-right:2ex;
+ }
+</style>
+</head>
+<body>
+<!-- BUGDESC Value stored to 'inputBytes' during its initialization is never read -->
+
+<!-- BUGTYPE Dead initialization -->
+
+<!-- BUGCATEGORY Dead store -->
+
+<!-- BUGFILE /home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp -->
+
+<!-- FILENAME TestBZip2Wrapper.cpp -->
+
+<!-- FUNCTIONNAME TestBody -->
+
+<!-- ISSUEHASHCONTENTOFLINEINCONTEXT 0a4e893d6149756e0c630169e3f6648b -->
+
+<!-- BUGLINE 108 -->
+
+<!-- BUGCOLUMN 23 -->
+
+<!-- BUGPATHLENGTH 1 -->
+
+<!-- BUGMETAEND -->
+<!-- REPORTHEADER -->
+<h3>Bug Summary</h3>
+<table class="simpletable">
+<tr><td class="rowname">File:</td><td>testing/adios2/transform/TestBZip2Wrapper.cpp</td></tr>
+<tr><td class="rowname">Warning:</td><td><a href="#EndPath">line 108, column 23</a><br />Value stored to 'inputBytes' during its initialization is never read</td></tr>
+</table>
+<!-- REPORTSUMMARYEXTRA -->
+<h3>Annotated Source Code</h3>
+<table class="code">
+<tr><td class="num" id="LN1">1</td><td class="line"><span class='directive'>#include &lt;cstdint&gt;</span></td></tr>
+<tr><td class="num" id="LN2">2</td><td class="line"><span class='directive'>#include &lt;iostream&gt;</span></td></tr>
+<tr><td class="num" id="LN3">3</td><td class="line"><span class='directive'>#include &lt;numeric&gt; //std::iota</span></td></tr>
+<tr><td class="num" id="LN4">4</td><td class="line"><span class='directive'>#include &lt;stdexcept&gt;</span></td></tr>
+<tr><td class="num" id="LN5">5</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN6">6</td><td class="line"><span class='directive'>#include &lt;adios2.h&gt;</span></td></tr>
+<tr><td class="num" id="LN7">7</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN8">8</td><td class="line"><span class='directive'>#include &lt;gtest/gtest.h&gt;</span></td></tr>
+<tr><td class="num" id="LN9">9</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN10">10</td><td class="line"><span class='keyword'>class</span> ADIOSBZip2Wrapper : <span class='keyword'>public</span> ::testing::Test</td></tr>
+<tr><td class="num" id="LN11">11</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN12">12</td><td class="line"><span class='keyword'>public</span>:</td></tr>
+<tr><td class="num" id="LN13">13</td><td class="line">    ADIOSBZip2Wrapper() : adios(<span class='keyword'>true</span>), io(adios.DeclareIO(<span class='string_literal'>"TestADIOSBZip2"</span>)) {}</td></tr>
+<tr><td class="num" id="LN14">14</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN15">15</td><td class="line"><span class='keyword'>protected</span>:</td></tr>
+<tr><td class="num" id="LN16">16</td><td class="line">    adios2::ADIOS adios;</td></tr>
+<tr><td class="num" id="LN17">17</td><td class="line">    adios2::IO &amp;io;</td></tr>
+<tr><td class="num" id="LN18">18</td><td class="line">};</td></tr>
+<tr><td class="num" id="LN19">19</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN20">20</td><td class="line"><span class='macro'>TEST_F(ADIOSBZip2Wrapper, UInt100)<span class='expansion'>class ADIOSBZip2Wrapper_UInt100_Test : public ADIOSBZip2Wrapper<br> { public: ADIOSBZip2Wrapper_UInt100_Test() {} private: virtual<br> void TestBody(); static ::testing::TestInfo* const test_info_<br> __attribute__ ((unused)); ADIOSBZip2Wrapper_UInt100_Test(ADIOSBZip2Wrapper_UInt100_Test<br> const &amp;) = delete; void operator=(ADIOSBZip2Wrapper_UInt100_Test<br> const &amp;) = delete;};::testing::TestInfo* const ADIOSBZip2Wrapper_UInt100_Test<br> ::test_info_ = ::testing::internal::MakeAndRegisterTestInfo(<br> "ADIOSBZip2Wrapper", "UInt100", __null, __null, ::testing::internal<br>::CodeLocation("/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 20), (::testing::internal::GetTypeId&lt;ADIOSBZip2Wrapper&gt;<br>()), ADIOSBZip2Wrapper::SetUpTestCase, ADIOSBZip2Wrapper::TearDownTestCase<br>, new ::testing::internal::TestFactoryImpl&lt; ADIOSBZip2Wrapper_UInt100_Test<br>&gt;);void ADIOSBZip2Wrapper_UInt100_Test::TestBody()</span></span></td></tr>
+<tr><td class="num" id="LN21">21</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN22">22</td><td class="line">    <span class='comment'>/** Application variable uints from 0 to 1000 */</span></td></tr>
+<tr><td class="num" id="LN23">23</td><td class="line">    std::vector&lt;uint32_t&gt; myUInts(100);</td></tr>
+<tr><td class="num" id="LN24">24</td><td class="line">    std::iota(myUInts.begin(), myUInts.end(), 0.f);</td></tr>
+<tr><td class="num" id="LN25">25</td><td class="line">    <span class='keyword'>const</span> std::size_t Nx = myUInts.size();</td></tr>
+<tr><td class="num" id="LN26">26</td><td class="line">    <span class='keyword'>const</span> std::size_t inputBytes = Nx * <span class='keyword'>sizeof</span>(uint32_t);</td></tr>
+<tr><td class="num" id="LN27">27</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN28">28</td><td class="line">    <span class='comment'>// Define ADIOS variable</span></td></tr>
+<tr><td class="num" id="LN29">29</td><td class="line">    <span class='keyword'>auto</span> &amp;var_UInt = io.DefineVariable&lt;uint32_t&gt;(<span class='string_literal'>"myUInts"</span>, {}, {}, {Nx},</td></tr>
+<tr><td class="num" id="LN30">30</td><td class="line">                                                 adios2::ConstantDims);</td></tr>
+<tr><td class="num" id="LN31">31</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN32">32</td><td class="line">    <span class='comment'>// Verify the return type is as expected</span></td></tr>
+<tr><td class="num" id="LN33">33</td><td class="line">    ::testing::StaticAssertTypeEq&lt;<span class='keyword'>decltype</span>(var_UInt),</td></tr>
+<tr><td class="num" id="LN34">34</td><td class="line">                                  adios2::Variable&lt;uint32_t&gt; &amp;&gt;();</td></tr>
+<tr><td class="num" id="LN35">35</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN36">36</td><td class="line">    <span class='comment'>// Define bzip2 transform</span></td></tr>
+<tr><td class="num" id="LN37">37</td><td class="line">    adios2::Operator &amp;adiosBZip2 =</td></tr>
+<tr><td class="num" id="LN38">38</td><td class="line">        adios.DefineOperator(<span class='string_literal'>"BZip2Compressor"</span>, <span class='string_literal'>"BZip2"</span>);</td></tr>
+<tr><td class="num" id="LN39">39</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN40">40</td><td class="line">    <span class='keyword'>const</span> <span class='keyword'>unsigned</span> <span class='keyword'>int</span> bzip2ID =</td></tr>
+<tr><td class="num" id="LN41">41</td><td class="line">        var_UInt.AddTransform(adiosBZip2, {{<span class='string_literal'>"BlockSize100K"</span>, <span class='string_literal'>"2"</span>}});</td></tr>
+<tr><td class="num" id="LN42">42</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN43">43</td><td class="line">    <span class='keyword'>const</span> std::size_t estimatedSize =</td></tr>
+<tr><td class="num" id="LN44">44</td><td class="line">        adiosBZip2.BufferMaxSize(Nx * var_UInt.m_ElementSize);</td></tr>
+<tr><td class="num" id="LN45">45</td><td class="line">    std::vector&lt;<span class='keyword'>char</span>&gt; compressedBuffer(estimatedSize);</td></tr>
+<tr><td class="num" id="LN46">46</td><td class="line">    size_t compressedSize = adiosBZip2.Compress(</td></tr>
+<tr><td class="num" id="LN47">47</td><td class="line">        myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize,</td></tr>
+<tr><td class="num" id="LN48">48</td><td class="line">        var_UInt.m_Type, compressedBuffer.data(),</td></tr>
+<tr><td class="num" id="LN49">49</td><td class="line">        var_UInt.m_OperatorsInfo[bzip2ID].Parameters);</td></tr>
+<tr><td class="num" id="LN50">50</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN51">51</td><td class="line">    <span class='macro'>EXPECT_LE(compressedSize, estimatedSize)<span class='expansion'>switch (0) case 0: default: if (const ::testing::AssertionResult<br> gtest_ar = (::testing::internal::CmpHelperLE("compressedSize"<br>, "estimatedSize", compressedSize, estimatedSize))) ; else ::<br>testing::internal::AssertHelper(::testing::TestPartResult::kNonFatalFailure<br>, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 51, gtest_ar.failure_message()) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN52">52</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN53">53</td><td class="line">    compressedBuffer.resize(compressedSize);</td></tr>
+<tr><td class="num" id="LN54">54</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN55">55</td><td class="line">    <span class='comment'>// Allocate original data size</span></td></tr>
+<tr><td class="num" id="LN56">56</td><td class="line">    std::vector&lt;uint32_t&gt; decompressedBuffer(Nx);</td></tr>
+<tr><td class="num" id="LN57">57</td><td class="line">    size_t decompressedSize = adiosBZip2.Decompress(</td></tr>
+<tr><td class="num" id="LN58">58</td><td class="line">        compressedBuffer.data(), compressedSize, decompressedBuffer.data(),</td></tr>
+<tr><td class="num" id="LN59">59</td><td class="line">        decompressedBuffer.size() * <span class='keyword'>sizeof</span>(uint32_t));</td></tr>
+<tr><td class="num" id="LN60">60</td><td class="line">    <span class='macro'>ASSERT_EQ(decompressedSize, inputBytes)<span class='expansion'>switch (0) case 0: default: if (const ::testing::AssertionResult<br> gtest_ar = (::testing::internal:: EqHelper&lt;(sizeof(::testing<br>::internal::IsNullLiteralHelper(decompressedSize)) == 1)&gt;::<br>Compare("decompressedSize", "inputBytes", decompressedSize, inputBytes<br>))) ; else return ::testing::internal::AssertHelper(::testing<br>::TestPartResult::kFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 60, gtest_ar.failure_message()) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN61">61</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN62">62</td><td class="line">    <span class='comment'>// testing data recovery</span></td></tr>
+<tr><td class="num" id="LN63">63</td><td class="line">    <span class='keyword'>for</span> (size_t i = 0; i &lt; Nx; ++i)</td></tr>
+<tr><td class="num" id="LN64">64</td><td class="line">    {</td></tr>
+<tr><td class="num" id="LN65">65</td><td class="line">        <span class='macro'>ASSERT_EQ(decompressedBuffer[i], myUInts[i])<span class='expansion'>switch (0) case 0: default: if (const ::testing::AssertionResult<br> gtest_ar = (::testing::internal:: EqHelper&lt;(sizeof(::testing<br>::internal::IsNullLiteralHelper(decompressedBuffer[i])) == 1)<br>&gt;::Compare("decompressedBuffer[i]", "myUInts[i]", decompressedBuffer<br>[i], myUInts[i]))) ; else return ::testing::internal::AssertHelper<br>(::testing::TestPartResult::kFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 65, gtest_ar.failure_message()) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN66">66</td><td class="line">    }</td></tr>
+<tr><td class="num" id="LN67">67</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN68">68</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN69">69</td><td class="line"><span class='macro'>TEST_F(ADIOSBZip2Wrapper, WrongParameterValue)<span class='expansion'>class ADIOSBZip2Wrapper_WrongParameterValue_Test : public ADIOSBZip2Wrapper<br> { public: ADIOSBZip2Wrapper_WrongParameterValue_Test() {} private<br>: virtual void TestBody(); static ::testing::TestInfo* const test_info_<br> __attribute__ ((unused)); ADIOSBZip2Wrapper_WrongParameterValue_Test<br>(ADIOSBZip2Wrapper_WrongParameterValue_Test const &amp;) = delete<br>; void operator=(ADIOSBZip2Wrapper_WrongParameterValue_Test const<br> &amp;) = delete;};::testing::TestInfo* const ADIOSBZip2Wrapper_WrongParameterValue_Test<br> ::test_info_ = ::testing::internal::MakeAndRegisterTestInfo(<br> "ADIOSBZip2Wrapper", "WrongParameterValue", __null, __null, ::<br>testing::internal::CodeLocation("/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 69), (::testing::internal::GetTypeId&lt;ADIOSBZip2Wrapper&gt;<br>()), ADIOSBZip2Wrapper::SetUpTestCase, ADIOSBZip2Wrapper::TearDownTestCase<br>, new ::testing::internal::TestFactoryImpl&lt; ADIOSBZip2Wrapper_WrongParameterValue_Test<br>&gt;);void ADIOSBZip2Wrapper_WrongParameterValue_Test::TestBody<br>()</span></span></td></tr>
+<tr><td class="num" id="LN70">70</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN71">71</td><td class="line">    <span class='comment'>/** Application variable uints from 0 to 1000 */</span></td></tr>
+<tr><td class="num" id="LN72">72</td><td class="line">    std::vector&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt; myUInts(100);</td></tr>
+<tr><td class="num" id="LN73">73</td><td class="line">    std::iota(myUInts.begin(), myUInts.end(), 0.f);</td></tr>
+<tr><td class="num" id="LN74">74</td><td class="line">    <span class='keyword'>const</span> std::size_t Nx = myUInts.size();</td></tr>
+<tr><td class="num" id="LN75">75</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN76">76</td><td class="line">    <span class='comment'>// Define ADIOS variable</span></td></tr>
+<tr><td class="num" id="LN77">77</td><td class="line">    <span class='keyword'>auto</span> &amp;var_UInt = io.DefineVariable&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt;(<span class='string_literal'>"myUInts"</span>, {}, {}, {Nx},</td></tr>
+<tr><td class="num" id="LN78">78</td><td class="line">                                                     adios2::ConstantDims);</td></tr>
+<tr><td class="num" id="LN79">79</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN80">80</td><td class="line">    <span class='comment'>// Verify the return type is as expected</span></td></tr>
+<tr><td class="num" id="LN81">81</td><td class="line">    ::testing::StaticAssertTypeEq&lt;<span class='keyword'>decltype</span>(var_UInt),</td></tr>
+<tr><td class="num" id="LN82">82</td><td class="line">                                  adios2::Variable&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt; &amp;&gt;();</td></tr>
+<tr><td class="num" id="LN83">83</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN84">84</td><td class="line">    <span class='comment'>// Define bzip2 transform</span></td></tr>
+<tr><td class="num" id="LN85">85</td><td class="line">    adios2::Operator &amp;adiosBZip2 =</td></tr>
+<tr><td class="num" id="LN86">86</td><td class="line">        adios.DefineOperator(<span class='string_literal'>"BZip2Compressor"</span>, <span class='string_literal'>"BZip2"</span>);</td></tr>
+<tr><td class="num" id="LN87">87</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN88">88</td><td class="line">    <span class='keyword'>const</span> <span class='keyword'>unsigned</span> <span class='keyword'>int</span> bzip2ID =</td></tr>
+<tr><td class="num" id="LN89">89</td><td class="line">        var_UInt.AddTransform(adiosBZip2, {{<span class='string_literal'>"BlockSize100K"</span>, <span class='string_literal'>"10"</span>}});</td></tr>
+<tr><td class="num" id="LN90">90</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN91">91</td><td class="line">    <span class='keyword'>const</span> std::size_t estimatedSize =</td></tr>
+<tr><td class="num" id="LN92">92</td><td class="line">        adiosBZip2.BufferMaxSize(Nx * var_UInt.m_ElementSize);</td></tr>
+<tr><td class="num" id="LN93">93</td><td class="line">    std::vector&lt;<span class='keyword'>char</span>&gt; compressedBuffer(estimatedSize);</td></tr>
+<tr><td class="num" id="LN94">94</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN95">95</td><td class="line">    <span class='macro'>EXPECT_THROW(size_t compressedSize = adiosBZip2.Compress(<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { size_t compressedSize =<br> adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt<br>.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt<br>.m_OperatorsInfo[bzip2ID].Parameters); }; } catch (std::invalid_argument<br> const&amp;) { gtest_caught_expected = true; } catch (...) { gtest_msg<br>.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_99; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_99; } } else gtest_label_testthrow_99<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 99, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN96">96</td><td class="line">                     <span class='macro'>myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize,<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { size_t compressedSize =<br> adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt<br>.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt<br>.m_OperatorsInfo[bzip2ID].Parameters); }; } catch (std::invalid_argument<br> const&amp;) { gtest_caught_expected = true; } catch (...) { gtest_msg<br>.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_99; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_99; } } else gtest_label_testthrow_99<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 99, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN97">97</td><td class="line">                     <span class='macro'>var_UInt.m_Type, compressedBuffer.data(),<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { size_t compressedSize =<br> adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt<br>.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt<br>.m_OperatorsInfo[bzip2ID].Parameters); }; } catch (std::invalid_argument<br> const&amp;) { gtest_caught_expected = true; } catch (...) { gtest_msg<br>.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_99; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_99; } } else gtest_label_testthrow_99<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 99, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN98">98</td><td class="line">                     <span class='macro'>var_UInt.m_OperatorsInfo[bzip2ID].Parameters),<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { size_t compressedSize =<br> adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt<br>.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt<br>.m_OperatorsInfo[bzip2ID].Parameters); }; } catch (std::invalid_argument<br> const&amp;) { gtest_caught_expected = true; } catch (...) { gtest_msg<br>.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_99; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_99; } } else gtest_label_testthrow_99<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 99, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN99">99</td><td class="line">                 <span class='macro'>std::invalid_argument)<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { size_t compressedSize =<br> adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt<br>.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt<br>.m_OperatorsInfo[bzip2ID].Parameters); }; } catch (std::invalid_argument<br> const&amp;) { gtest_caught_expected = true; } catch (...) { gtest_msg<br>.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_99; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "size_t compressedSize = adiosBZip2.Compress( myUInts.data(), var_UInt.m_Count, var_UInt.m_ElementSize, var_UInt.m_Type, compressedBuffer.data(), var_UInt.m_OperatorsInfo[bzip2ID].Parameters)"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_99; } } else gtest_label_testthrow_99<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 99, gtest_msg.value) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN100">100</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN101">101</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN102">102</td><td class="line"><span class='macro'>TEST_F(ADIOSBZip2Wrapper, WrongBZip2Name)<span class='expansion'>class ADIOSBZip2Wrapper_WrongBZip2Name_Test : public ADIOSBZip2Wrapper<br> { public: ADIOSBZip2Wrapper_WrongBZip2Name_Test() {} private<br>: virtual void TestBody(); static ::testing::TestInfo* const test_info_<br> __attribute__ ((unused)); ADIOSBZip2Wrapper_WrongBZip2Name_Test<br>(ADIOSBZip2Wrapper_WrongBZip2Name_Test const &amp;) = delete;<br> void operator=(ADIOSBZip2Wrapper_WrongBZip2Name_Test const &amp;<br>) = delete;};::testing::TestInfo* const ADIOSBZip2Wrapper_WrongBZip2Name_Test<br> ::test_info_ = ::testing::internal::MakeAndRegisterTestInfo(<br> "ADIOSBZip2Wrapper", "WrongBZip2Name", __null, __null, ::testing<br>::internal::CodeLocation("/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 102), (::testing::internal::GetTypeId&lt;ADIOSBZip2Wrapper&gt;<br>()), ADIOSBZip2Wrapper::SetUpTestCase, ADIOSBZip2Wrapper::TearDownTestCase<br>, new ::testing::internal::TestFactoryImpl&lt; ADIOSBZip2Wrapper_WrongBZip2Name_Test<br>&gt;);void ADIOSBZip2Wrapper_WrongBZip2Name_Test::TestBody()</span></span></td></tr>
+<tr><td class="num" id="LN103">103</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN104">104</td><td class="line">    <span class='comment'>/** Application variable uints from 0 to 1000 */</span></td></tr>
+<tr><td class="num" id="LN105">105</td><td class="line">    std::vector&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt; myUInts(100);</td></tr>
+<tr><td class="num" id="LN106">106</td><td class="line">    std::iota(myUInts.begin(), myUInts.end(), 0.f);</td></tr>
+<tr><td class="num" id="LN107">107</td><td class="line">    <span class='keyword'>const</span> std::size_t Nx = myUInts.size();</td></tr>
+<tr><td class="num" id="LN108">108</td><td class="line">    <span class='keyword'>const</span> std::size_t <span class="mrange">inputBytes</span> = <span class="mrange">Nx * <span class='keyword'>sizeof</span>(<span class='keyword'>unsigned</span> <span class='keyword'>int</span>)</span>;</td></tr>
+<tr><td class="num"></td><td class="line"><div id="EndPath" class="msg msgEvent" style="margin-left:23ex">Value stored to 'inputBytes' during its initialization is never read</div></td></tr>
+<tr><td class="num" id="LN109">109</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN110">110</td><td class="line">    <span class='comment'>// Define ADIOS variable</span></td></tr>
+<tr><td class="num" id="LN111">111</td><td class="line">    <span class='keyword'>auto</span> &amp;var_UInt = io.DefineVariable&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt;(<span class='string_literal'>"myUInts"</span>, {}, {}, {Nx},</td></tr>
+<tr><td class="num" id="LN112">112</td><td class="line">                                                     adios2::ConstantDims);</td></tr>
+<tr><td class="num" id="LN113">113</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN114">114</td><td class="line">    <span class='comment'>// Verify the return type is as expected</span></td></tr>
+<tr><td class="num" id="LN115">115</td><td class="line">    ::testing::StaticAssertTypeEq&lt;<span class='keyword'>decltype</span>(var_UInt),</td></tr>
+<tr><td class="num" id="LN116">116</td><td class="line">                                  adios2::Variable&lt;<span class='keyword'>unsigned</span> <span class='keyword'>int</span>&gt; &amp;&gt;();</td></tr>
+<tr><td class="num" id="LN117">117</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN118">118</td><td class="line">    <span class='comment'>// Check bzip2 lower case and camel case</span></td></tr>
+<tr><td class="num" id="LN119">119</td><td class="line">    <span class='macro'>EXPECT_NO_THROW(adios2::Operator &amp;adiosBZip2 =<span class='expansion'>switch (0) case 0: default: if (::testing::internal::AlwaysTrue<br>()) { try { if (::testing::internal::AlwaysTrue()) { adios2::<br>Operator &amp;adiosBZip2 = adios.DefineOperator("BZip2Compressor1"<br>, "bzip2"); }; } catch (...) { goto gtest_label_testnothrow_120<br>; } } else gtest_label_testnothrow_120: ::testing::internal::<br>AssertHelper(::testing::TestPartResult::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 120, "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor1\", \"bzip2\")"<br> " doesn't throw an exception.\n" "  Actual: it throws.") = ::<br>testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN120">120</td><td class="line">                        <span class='macro'>adios.DefineOperator(<span class='string_literal'>"BZip2Compressor1"</span>, <span class='string_literal'>"bzip2"</span>))<span class='expansion'>switch (0) case 0: default: if (::testing::internal::AlwaysTrue<br>()) { try { if (::testing::internal::AlwaysTrue()) { adios2::<br>Operator &amp;adiosBZip2 = adios.DefineOperator("BZip2Compressor1"<br>, "bzip2"); }; } catch (...) { goto gtest_label_testnothrow_120<br>; } } else gtest_label_testnothrow_120: ::testing::internal::<br>AssertHelper(::testing::TestPartResult::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 120, "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor1\", \"bzip2\")"<br> " doesn't throw an exception.\n" "  Actual: it throws.") = ::<br>testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN121">121</td><td class="line">    <span class='macro'>EXPECT_NO_THROW(adios2::Operator &amp;adiosBZip2 =<span class='expansion'>switch (0) case 0: default: if (::testing::internal::AlwaysTrue<br>()) { try { if (::testing::internal::AlwaysTrue()) { adios2::<br>Operator &amp;adiosBZip2 = adios.DefineOperator("BZip2Compressor2"<br>, "BZip2"); }; } catch (...) { goto gtest_label_testnothrow_122<br>; } } else gtest_label_testnothrow_122: ::testing::internal::<br>AssertHelper(::testing::TestPartResult::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 122, "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor2\", \"BZip2\")"<br> " doesn't throw an exception.\n" "  Actual: it throws.") = ::<br>testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN122">122</td><td class="line">                        <span class='macro'>adios.DefineOperator(<span class='string_literal'>"BZip2Compressor2"</span>, <span class='string_literal'>"BZip2"</span>))<span class='expansion'>switch (0) case 0: default: if (::testing::internal::AlwaysTrue<br>()) { try { if (::testing::internal::AlwaysTrue()) { adios2::<br>Operator &amp;adiosBZip2 = adios.DefineOperator("BZip2Compressor2"<br>, "BZip2"); }; } catch (...) { goto gtest_label_testnothrow_122<br>; } } else gtest_label_testnothrow_122: ::testing::internal::<br>AssertHelper(::testing::TestPartResult::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 122, "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor2\", \"BZip2\")"<br> " doesn't throw an exception.\n" "  Actual: it throws.") = ::<br>testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN123">123</td><td class="line">    <span class='macro'>EXPECT_THROW(adios2::Operator &amp;adiosBZip2 =<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor3", "bzip")<br>; }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_125; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_125; } } else gtest_label_testthrow_125<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 125, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN124">124</td><td class="line">                     <span class='macro'>adios.DefineOperator(<span class='string_literal'>"BZip2Compressor3"</span>, <span class='string_literal'>"bzip"</span>),<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor3", "bzip")<br>; }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_125; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_125; } } else gtest_label_testthrow_125<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 125, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN125">125</td><td class="line">                 <span class='macro'>std::invalid_argument)<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor3", "bzip")<br>; }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_125; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor3\", \"bzip\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_125; } } else gtest_label_testthrow_125<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 125, gtest_msg.value) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN126">126</td><td class="line">    <span class='macro'>EXPECT_THROW(adios2::Operator &amp;adiosBZip2 =<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor4", "BZIP2"<br>); }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_128; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_128; } } else gtest_label_testthrow_128<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 128, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN127">127</td><td class="line">                     <span class='macro'>adios.DefineOperator(<span class='string_literal'>"BZip2Compressor4"</span>, <span class='string_literal'>"BZIP2"</span>),<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor4", "BZIP2"<br>); }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_128; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_128; } } else gtest_label_testthrow_128<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 128, gtest_msg.value) = ::testing::Message()</span></span></td></tr>
+<tr><td class="num" id="LN128">128</td><td class="line">                 <span class='macro'>std::invalid_argument)<span class='expansion'>switch (0) case 0: default: if (::testing::internal::ConstCharPtr<br> gtest_msg = "") { bool gtest_caught_expected = false; try { if<br> (::testing::internal::AlwaysTrue()) { adios2::Operator &amp;<br>adiosBZip2 = adios.DefineOperator("BZip2Compressor4", "BZIP2"<br>); }; } catch (std::invalid_argument const&amp;) { gtest_caught_expected<br> = true; } catch (...) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws a different type."<br>; goto gtest_label_testthrow_128; } if (!gtest_caught_expected<br>) { gtest_msg.value = "Expected: " "adios2::Operator &amp;adiosBZip2 = adios.DefineOperator(\"BZip2Compressor4\", \"BZIP2\")"<br> " throws an exception of type " "std::invalid_argument" ".\n  Actual: it throws nothing."<br>; goto gtest_label_testthrow_128; } } else gtest_label_testthrow_128<br>: ::testing::internal::AssertHelper(::testing::TestPartResult<br>::kNonFatalFailure, "/home/chuck/Code/adios2/source/master/testing/adios2/transform/TestBZip2Wrapper.cpp"<br>, 128, gtest_msg.value) = ::testing::Message()</span></span>;</td></tr>
+<tr><td class="num" id="LN129">129</td><td class="line">}</td></tr>
+<tr><td class="num" id="LN130">130</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN131">131</td><td class="line"><span class='keyword'>int</span> main(<span class='keyword'>int</span> argc, <span class='keyword'>char</span> **argv)</td></tr>
+<tr><td class="num" id="LN132">132</td><td class="line">{</td></tr>
+<tr><td class="num" id="LN133">133</td><td class="line"><span class='directive'>#ifdef ADIOS2_HAVE_MPI</span></td></tr>
+<tr><td class="num" id="LN134">134</td><td class="line">    MPI_Init(&amp;argc, &amp;argv);</td></tr>
+<tr><td class="num" id="LN135">135</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN136">136</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN137">137</td><td class="line">    <span class='keyword'>int</span> result;</td></tr>
+<tr><td class="num" id="LN138">138</td><td class="line">    ::testing::InitGoogleTest(&amp;argc, argv);</td></tr>
+<tr><td class="num" id="LN139">139</td><td class="line">    result = RUN_ALL_TESTS();</td></tr>
+<tr><td class="num" id="LN140">140</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN141">141</td><td class="line"><span class='directive'>#ifdef ADIOS2_HAVE_MPI</span></td></tr>
+<tr><td class="num" id="LN142">142</td><td class="line">    MPI_Finalize();</td></tr>
+<tr><td class="num" id="LN143">143</td><td class="line"><span class='directive'>#endif</span></td></tr>
+<tr><td class="num" id="LN144">144</td><td class="line"> </td></tr>
+<tr><td class="num" id="LN145">145</td><td class="line">    <span class='keyword'>return</span> result;</td></tr>
+<tr><td class="num" id="LN146">146</td><td class="line">}</td></tr>
+</table></body></html>
